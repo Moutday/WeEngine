@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{$code_settings_info}</title>
+  <style media="screen">
+    .ui-content-box{
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .ui-code-img{
+      padding: 20px;
+    }
+    .ui-code-img img{
+      width: 80%;
+    }
+    .ui-code-text-tip{
+      color: #9c9c9c;
+      font-size: 18px;
+    }
+    .ui-code-text{
+      color: #35393c;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .ui-code-loading-img{
+      text-align:center;
+      margin:0 auto;
+    }
+    .ui-code-loading-img img{
+      vertical-align:middle;
+      width: 20%;
+    }
+    .ui-code-loading-img  span{
+      height:100%;
+      width:0;
+      overflow:hidden;
+      display:inline-block;
+      vertical-align:middle
+    }
+  </style>
+</head>
+<body>
+<div class="ui-content-box">
+{if $uid == "" or $code_uid == "1" }
+  <div class="ui-code-img">
+    <img src="http://ww3.sinaimg.cn/large/87c01ec7gy1fprclvofe9g20m80go76p.gif" alt=""><span> </span>
+  </div>
+  <div class="ui-code-text-tip">
+    您来晚了！活动已经结束。
+  微信扫码才有效果的，更多源码：<a href="https://bbs.appcxy.com">APP程序员社区</a></div>
+{else}
+    {if $code_info['type']=="2"}
+    <div class="ui-code-img">
+      <img src="{$contentdata}" alt="" width="100%">
+    </div>
+    <div class="ui-code-text">
+      长按识别验证码
+    </div>
+    {/if}
+{/if}
+</div>
+</body>
+</html>

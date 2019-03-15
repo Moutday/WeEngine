@@ -1,0 +1,322 @@
+{template 'common/header'}
+<style media="screen">
+	.we7-table-border-btn
+	{
+		position: absolute;
+		right: 30px;
+		top: 88px;
+	}
+	.ConetentAddWarnCss{
+		color: #f00;
+		display: none;
+	}
+	.file-box{
+		margin-top: 20px;
+	}
+	.file-box img{
+		margin-top: 20px;
+		width: 20%;
+	}
+	.comments {
+	 width:100%;/*自动适应父布局宽度*/
+	 overflow:auto;
+	 word-break:break-all;
+	 height: 200px;
+	}
+	.delBatchbtn{
+		margin-bottom: 20px;
+		display: none;
+	}
+</style>
+{if $code_info['type'] == '1'}
+<div class="">
+	<div class="we7-table-border-box" style="padding-bottom: 15px;margin: 10px 0 40px;border-bottom: 1px solid #eee;">
+		<h5 style=" font-weight: 400;font-size:18px;">编辑内容(连接)</h5>
+		<div class="pull-right we7-table-border-btn">
+			{if $code_info['radio'] == 2 AND $code_info['endint'] == 1}
+			<a href="{php echo $this->createWebUrl('content', array('op' => 'restart', 'uid' => $code_info['uid']))}" onclick="return confirm('您确定要重新开启活动吗？');return false;" class="btn btn-primary">重新开始</a>
+			{elseif $code_info['radio'] == 3 AND $code_info['endint'] == 1}
+			<a href="{php echo $this->createWebUrl('content', array('op' => 'restart', 'uid' => $code_info['uid']))}" onclick="return confirm('您确定要重新开启活动吗？');return false;" class="btn btn-primary">重新开始</a>
+			{/if}
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ConetentBatchAddModal" data-title="添加内容" >批量添加内容</button>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ConetentAddModal" data-title="添加内容" >添加内容</button>
+		</div>
+	</div>
+	<div class="delBatchbtn">
+		<button id="delBatchbtn" type="button" class="btn btn-danger" >全部删除</button>
+	</div>
+	<table class="table we7-table table-hover vertical-middle ng-scope" id="js-qr-list" ng-controller="QrDisplay">
+		<colgroup>
+			<col width="2%">
+		<col width="50%">
+		<col width="20%">
+		<col width="12%">
+		<col width="20%">
+		<col>
+		</colgroup>
+		<tbody>
+			<tr>
+			<th><input onclick="swapCheck()" type="checkbox"/></th>
+			<th>连接</th>
+			<th>备注</th>
+			<th>创建时间</th>
+			<th class="text-right">操作</th>
+		</tr>
+		{loop $code_content_list $key $code_value}
+		<tr>
+			<td><input type="checkbox" name="delBatc_checkbox" value="{$code_value['uuid']}"/></td>
+			<td><a href="{$code_value['url']}" target="_blank">{$code_value['url']}</a></td>
+			<td>{$code_value['remarks']}</td>
+			<td class="text-left"><?php echo date("Y-m-d ",$code_value['time']) ?></td>
+			<td>
+				<div class="link-group">
+					<a href="#" data-toggle="modal" data-target="#ConetentAddModal" data-title="编辑内容" data-url='{$code_value["url"]}' data-uid= '{$code_value["uuid"]}' data-remarks= '{$code_value["remarks"]}' >编辑</a>
+					<a href="{php echo $this->createWebUrl('content', array('op' => 'delete','uid'=> $code_info['uid'] ,'uuid' => $code_value['uuid']))}" onclick="return confirm('确认删除吗？');return false;">删除</a>
+				</div>
+			</td>
+		</tr>
+		{/loop}
+	</tbody>
+</table>
+</div>
+{elseif $code_info['type'] == '2' }
+<div class="">
+	<div class="we7-table-border-box" style="padding-bottom: 15px;margin: 10px 0 40px;border-bottom: 1px solid #eee;">
+		<h5 style=" font-weight: 400;font-size:18px;">编辑内容(图片)</h5>
+		<div class="pull-right we7-table-border-btn">
+			{if $code_info['radio'] == 2 AND $code_info['endint'] == 1}
+			<a href="{php echo $this->createWebUrl('content', array('op' => 'restart', 'uid' => $code_info['uid']))}" onclick="return confirm('您确定要重新开启活动吗？');return false;" class="btn btn-primary">重新开始</a>
+			{elseif $code_info['radio'] == 3 AND $code_info['endint'] == 1}
+			<a href="{php echo $this->createWebUrl('content', array('op' => 'restart', 'uid' => $code_info['uid']))}" onclick="return confirm('您确定要重新开启活动吗？');return false;" class="btn btn-primary">重新开始</a>
+			{/if}
+			<a class="btn btn-primary"  href="{php echo $this->createWebUrl('contents', array('uid'=> $code_info['uid']))}" >添加内容</a>
+		</div>
+	</div>
+	<div class="delBatchbtn">
+		<button id="delBatchbtn" type="button" class="btn btn-danger" >全部删除</button>
+	</div>
+	<table class="table we7-table table-hover vertical-middle ng-scope" id="js-qr-list" ng-controller="QrDisplay">
+		<colgroup>
+		<col width="2%">
+		<col width="28%">
+		<col>
+		</colgroup>
+		<tbody>
+			<tr>
+			<th><input onclick="swapCheck()" type="checkbox"/></th>
+			<th>图片</th>
+			<th>备注</th>
+			<th>创建时间</th>
+			<th class="text-right">操作</th>
+		</tr>
+		{loop $code_content_list $key $code_value}
+		<tr>
+			<td><input type="checkbox" name="delBatc_checkbox" value="{$code_value['uuid']}"/></td>
+			<td><a href="{$code_value['url']}" target="_blank"><img  style="width:20%;" src="{$code_value['url']}" alt=""> </a></td>
+			<td>{$code_value['remarks']}</td>
+			<td class="text-left"><?php echo date("Y-m-d ",$code_value['time']) ?></td>
+			<td>
+				<div class="link-group">
+					<a href="{php echo $this->createWebUrl('contents', array('op' => 'edit','uuid'=> $code_value['uuid'],'uid'=> $code_info['uid']))}">编辑</a>
+					<a href="{php echo $this->createWebUrl('content', array('op' => 'delete','uid'=> $code_info['uid'] ,'uuid' => $code_value['uuid']))}" onclick="return confirm('确认删除吗？');return false;">删除</a>
+				</div>
+			</td>
+		</tr>
+		{/loop}
+	</tbody>
+</table>
+</div>
+{/if}
+<div class="modal fade" id="ConetentBatchAddModal" tabindex="-1" role="dialog" aria-labelledby="ConetentAddModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="ModalLabel">批量添加内容</h4>
+      </div>
+      <div class="modal-body" id="js-qr-post" ng-controller="QrPost">
+        <form method="post">
+          <div class="form-group" style="margin-bottom: 0px;">
+            <label style="padding-bottom: 15px;"  for="message_text" class="control-label">地址(一行一个)</label>
+            	<textarea  class="comments"  id="message_Batch_text"></textarea>
+						<span id='message_Batch_text' style="" class="ConetentAddWarnCss">请输入内容</span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+				<input type="hidden" id="token" name="token" value="{$_W['token']}">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button id='ConetentbtnAddBatch' type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="ConetentAddModal" tabindex="-1" role="dialog" aria-labelledby="ConetentAddModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="ModalLabel">添加内容</h4>
+      </div>
+      <div class="modal-body" id="js-qr-post" ng-controller="QrPost">
+        <form method="post" >
+          <div class="form-group">
+            <label style="padding-bottom: 15px;"  for="recipient_list" class="control-label">连接:</label>
+            <input type="text" class="form-control" id="recipient_list">
+			<span id='ConetentAddWarn' style=""class="ConetentAddWarnCss">请输入连接</span>
+          </div>
+
+          <div class="form-group">
+            <label style="padding-bottom: 15px;"  for="message_text" class="control-label">备注:</label>
+            <textarea class="form-control" id="message_text"></textarea>
+			<span id='ConetentAddRemarks' style="" class="ConetentAddWarnCss">请输入备注</span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+		<input type="hidden" id="token" name="token" value="{$_W['token']}">
+		<input type="hidden" id="code_uid" name="codeuid" value="">
+		<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+		<button id='ConetentbtnAdd' type="button" class="btn btn-primary ConetentAdd-submit" style="display: none;">添加</button>
+		<button id='Conetentbtnedit' type="button" class="btn btn-primary ConetentAdd-submit" style="display: none;">编辑</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+var isCheckAll = false;
+function swapCheck() { if (isCheckAll) { $("input[type='checkbox']").each(function() {
+this.checked = false; $(".delBatchbtn").fadeOut(); $(".delBatchbtn").fadeOut("slow");
+									$(".delBatchbtn").fadeOut(3000);
+							});
+							isCheckAll = false;
+					} else {
+							$("input[type='checkbox']").each(function() {
+								$(".delBatchbtn").fadeIn();
+								$(".delBatchbtn").fadeIn("show");
+								$(".delBatchbtn").fadeIn(3000);
+									this.checked = true;
+							});
+							isCheckAll = true;
+					}
+			}
+			$('#delBatchbtn').click(function(){
+				var delBatc_checkbox = noCheckedValue();
+				$.ajax({
+						type: "POST",
+						url: "{php echo $this->createWebUrl('content', array('op' => 'delall', 'uid' => $code_info['uid']))}",
+						data: 'delBatc_checkbox=' + delBatc_checkbox,
+						dataType:"json",
+						async: false,
+						success: function(data) {
+							if (data.type==0) {
+								window.location.reload()
+							}else if (data.type==1) {
+
+							}
+						},
+						error: function(data) {
+						}
+				});
+			});
+			function noCheckedValue() {
+			var str = "";
+				$("input:checkbox[name='delBatc_checkbox']").each(function(i) {
+					var val = $(this).val();
+					str = str + "-" + val;
+				});
+			return str;
+			}
+	</script>
+<script type="text/javascript">
+$('#ConetentAddModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget)
+	var title  =  button.data('title')
+	var recipient_list = button.data('url')
+	var message_text = button.data('remarks')
+	var code_uid = button.data('uid')
+  var modal = $(this)
+	modal.find('.modal-title').text(title)
+	if (title == '添加内容') {
+		modal.find('#recipient_list').val('')
+		modal.find('#code_uid').val('')
+		modal.find('#code_uid').val('')
+		modal.find("#img").attr("src", "");
+		modal.find('#imgup').val('')
+			modal.find('#message_text').text('')
+		$("#ConetentbtnAdd").show()
+		$("#Conetentbtnedit").hide()
+		$("#ConetentAddWarn").hide()
+		$("#ConetentAddRemarks").hide()
+	}else if (title=='编辑内容') {
+		modal.find('#recipient_list').val(recipient_list)
+		modal.find('#code_uid').val(code_uid)
+		modal.find('#message_text').text(message_text)
+		$("#Conetentbtnedit").show()
+		$("#ConetentbtnAdd").hide()
+		$("#ConetentAddWarn").hide()
+		$("#ConetentAddRemarks").hide()
+	}
+});
+$('.ConetentAdd-submit').click(function(){
+	var recipient_list = $("#recipient_list").val();
+	recipient_list = recipient_list.replace(/%/g, "%25");
+	recipient_list = recipient_list.replace(/\&/g, "%26");
+	recipient_list = recipient_list.replace(/\+/g, "%2B");
+	var message_text = $("#message_text").val();
+	var code_uid = $("#code_uid").val();
+	var token = $("#token").val();
+	if (recipient_list=="") {
+		$("#ConetentAddWarn").show()
+		return;
+	}else if (message_text=="") {
+		$("#ConetentAddRemarks").show()
+		return;
+	}
+	$.ajax({
+			type: "POST",
+			url: "{php echo $this->createWebUrl('content', array('op' => 'post', 'uid' => $code_info['uid']))}",
+			data: 'recipient_list=' + recipient_list + '&message_text=' + message_text+'&token='+token + '&code_uid=' + code_uid ,
+			dataType:"json",
+			async: false,
+			success: function(data) {
+				console.log(data);
+				if (data.type==0) {
+					window.location.reload()
+				}else if (data.type==1) {
+
+				}
+			},
+			error: function(data) {
+			}
+	});
+});
+$('#ConetentbtnAddBatch').click(function(){
+	var message_Batch_text = $("#message_Batch_text").val();
+	message_Batch_text = message_Batch_text.replace(/%/g, "%25");
+	message_Batch_text = message_Batch_text.replace(/\&/g, "%26");
+	message_Batch_text = message_Batch_text.replace(/\+/g, "%2B");
+	if (message_Batch_text=="") {
+		$("#message_Batch_text").show()
+		return;
+	}
+	$.ajax({
+			type: "POST",
+			url: "{php echo $this->createWebUrl('content', array('op' => 'batch', 'uid' => $code_info['uid']))}",
+			data: 'message_Batch_text=' + message_Batch_text,
+			dataType:"json",
+			async: false,
+			success: function(data) {
+				console.log(data);
+				if (data.type==0) {
+					window.location.reload()
+				}else if (data.type==1) {
+
+				}
+			},
+			error: function(data) {
+			}
+	});
+});
+</script>
+{template 'common/footer'}

@@ -1,0 +1,98 @@
+{template 'common/header'}
+<style media="screen">
+	.d{
+		margin-top: 10px;
+	}
+	.d_text{
+		color: #ff3c01;
+		font-weight: bold;
+	}
+	.SeeModal-img{
+		margin:  0 auto;
+		text-align: center;
+	}
+	.SeeModal-btn{
+		margin-top: 30px;
+		text-align: center;
+	}
+	.SeeModal-img img{
+		width: 30%;
+	}
+</style>
+	<div class="we7-page-title">二维码管理</div>
+	<div class="we7-padding-bottom clearfix">
+		<div class="pull-right">
+      <a href="{php echo $this->createWebUrl('payop',array('op' => 'add'))}" class="btn btn-primary  we7-margin-left">新增活码</a>
+		</div>
+	</div>
+	<table class="table we7-table table-hover vertical-middle ng-scope" id="js-qr-list" ng-controller="QrDisplay">
+		<colgroup>
+		<col width="100px">
+		<col width="80px">
+		<col width="80px">
+		<col width="60px">
+		<col width="120px">
+		<col width="155px">
+		<col>
+		</colgroup>
+    <tbody>
+      <tr>
+			<th>用户头像</th>
+			<th>用户昵称</th>
+			<th>创建时间</th>
+			<th>扫码次数</th>
+			<th>备注</th>
+			<th class="text-right">操作</th>
+		</tr>
+		{loop $code_pay_list $key $value}
+    <tr>
+			<td><img src="{$value['userurl']}" alt="" width="35%"></td>
+			<td title="{$value['username']}">{$value['username']}</td>
+			<td class="text-left"><?php echo date("Y-m-d ",$value['time']) ?></td>
+			<td class="text-left">{$value['scanningmax']}</td>
+			<td class="text-left">{$value['remarks']}</td>
+			<td>
+				<div class="link-group">
+					<a href="#" data-toggle="modal" data-target="#SeeModal" data-title="查看海报" data-url="{php echo $_W['attachurl_local'].$value['posterurl']}" data-code="{$value['codeurl']}">查看海报</a>
+					<a href="{php echo $this->createWebUrl('payop', array('op' => 'edit','uid' => $value['uid']))}">编辑</a>
+					<a href="{php echo $this->createWebUrl('payop', array('op' => 'delete', 'uid' => $value['uid']))}" onclick="return confirm('确认删除吗？');return false;">删除</a>
+        </div>
+			</td>
+		</tr>
+		{/loop}
+			</tbody>
+  	</table>
+	<div class="modal fade" id="SeeModal" tabindex="-1" role="dialog" aria-labelledby="ConetentAddModal">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="ModalLabel">查看海报</h4>
+	      </div>
+	      <div class="modal-body">
+					<div class="SeeModal-img">
+						<img id="posterurl" src="">
+					</div>
+					<div class="SeeModal-btn">
+						<a id="download" href="#" class="btn btn-primary" download="download">下载海报</a>
+						<a id="downloadcode" href="#" class="btn btn-primary we7-margin-left" download="w3logo">下载二维码</a>
+					</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<script type="text/javascript">
+	$('#SeeModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		var title  =  button.data('title')
+		var posterurl = button.data('url')
+		var domain = "{$code_baidu_url}{$domain}"
+		var codeurl = button.data('code')
+		codeurl = 	codeurl.replace(/&/g, "%26");
+		var modal = $(this)
+		modal.find("#download").attr("href",posterurl);
+		modal.find("#posterurl").attr("src",posterurl);
+		modal.find("#downloadcode").attr("href",domain + codeurl);
+	});
+	</script>
+{template 'common/footer'}

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://bbs.appcxy.com" versionCode="0.8,1.0">
+	<application setting="false">
+		<name><![CDATA[微信活码]]></name>
+		<identifie><![CDATA[nx_livecode]]></identifie>
+		<version><![CDATA[3.2.0]]></version>
+		<type><![CDATA[enterprise]]></type>
+		<ability><![CDATA[二维码图案不变，内容可随时变更，极大提高营销效率基于活码技术，二维码图案更简单，扫描更容易。]]></ability>
+		<description><![CDATA[实时统计二维码扫描数据，传播效果一目了然；根据地域、网络、设备等多维度分析数据，提升管理效率。]]></description>
+		<author><![CDATA[APP程序员论坛]]></author>
+		<url><![CDATA[http://bbs.appcxy.com]]></url>
+	</application>
+	<platform>
+		<subscribes>
+		</subscribes>
+		<handles>
+			<message type="text" />
+			<message type="image" />
+			<message type="voice" />
+			<message type="video" />
+			<message type="shortvideo" />
+			<message type="location" />
+			<message type="link" />
+			<message type="subscribe" />
+			<message type="qr" />
+			<message type="trace" />
+			<message type="click" />
+			<message type="merchant_order" />
+			<message type="user_get_card" />
+			<message type="user_del_card" />
+			<message type="user_consume_card" />
+		</handles>
+		<rule embed="true" />
+		<card embed="false" />
+		<supports>
+		</supports>
+	</platform>
+	<bindings>
+		<cover>
+			<entry title="三码合一(用户入口)" do="user" state="" direct="false" />
+			<entry title="微信活码" do="home" state="" direct="false" />
+			<entry title="三码合一" do="pay" state="" direct="false" />
+		</cover>
+		<menu>
+			<entry title="微信活码11" do="code" state="" direct="false" />
+			<entry title="广告管理11" do="ad" state="" direct="false" />
+			<entry title="三码合一11" do="pay" state="" direct="false" />
+			<entry title="系统设置" do="setup" state="" direct="false" />
+			<entry title="应用推荐" do="app" state="" direct="false" />
+		</menu>
+	</bindings>
+	<install><![CDATA[CREATE TABLE IF NOT EXISTS `ims_nx_code_ad` (
+  `uid` int(11) NOT NULL DEFAULT '0',
+  `adimg` varchar(255) DEFAULT NULL,
+  `adurl` varchar(255) DEFAULT NULL,
+  `time` int(32) DEFAULT NULL,
+  `switch` int(11) NOT NULL DEFAULT '1',
+  `endtime` int(11) DEFAULT NULL,
+  `uniacid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_nx_code_content` (
+  `uuid` int(11) NOT NULL AUTO_INCREMENT,
+  `url` text,
+  `time` int(16) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  `count` int(11) DEFAULT NULL,
+  `see` int(11) DEFAULT '0' COMMENT '是否查看',
+  `code_uid` int(11) DEFAULT NULL,
+  `content_uid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_nx_code_counter` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) DEFAULT NULL,
+  `code_uid` int(11) DEFAULT NULL,
+  `content_uid` int(11) DEFAULT NULL,
+  `time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_nx_code_list` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) DEFAULT NULL COMMENT '网址',
+  `name` varchar(255) DEFAULT NULL COMMENT '备注',
+  `time` int(16) DEFAULT NULL COMMENT '添加时间',
+  `number` int(11) DEFAULT NULL COMMENT '闽值',
+  `type` int(11) DEFAULT NULL COMMENT '类型1 链接 2图片',
+  `scan` int(11) DEFAULT '0' COMMENT '内容ID',
+  `scanning` int(11) DEFAULT NULL,
+  `scanningmax` int(11) DEFAULT NULL COMMENT '扫码总数',
+  `radio` int(11) DEFAULT '1' COMMENT '展示模式',
+  `uniacid` int(11) DEFAULT NULL COMMENT '公众号ID',
+  `endint` int(11) DEFAULT '0',
+  `qrcode` varchar(255) DEFAULT NULL COMMENT '二维码',
+  `switch` int(11) DEFAULT '1' COMMENT '开关 1 活动开启 2活动结束',
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_nx_code_pay` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `wechat` varchar(255) DEFAULT NULL COMMENT '微信',
+  `wechaturl` varchar(255) DEFAULT NULL COMMENT '微信图片上传地址',
+  `alipay` varchar(255) DEFAULT NULL COMMENT '支付宝',
+  `alipayurl` varchar(255) DEFAULT NULL COMMENT '支付宝图片上传地址',
+  `qq` varchar(255) DEFAULT NULL COMMENT 'qq',
+  `qqurl` varchar(255) DEFAULT NULL COMMENT 'qq图片上传',
+  `title` varchar(255) DEFAULT NULL COMMENT '海报标题',
+  `uniacid` varchar(255) DEFAULT NULL COMMENT '公众号ID',
+  `template` int(11) DEFAULT '1',
+  `time` int(11) DEFAULT NULL COMMENT '添加时间',
+  `on` int(11) DEFAULT NULL COMMENT '审核 0 通过 1 拒绝',
+  `userid` int(11) DEFAULT NULL COMMENT '用户id',
+  `userurl` varchar(255) DEFAULT NULL COMMENT '用户头像',
+  `username` varchar(255) DEFAULT NULL COMMENT '用户昵称',
+  `codeurl` varchar(255) DEFAULT NULL COMMENT '二维码地址',
+  `remarks` varchar(255) DEFAULT NULL COMMENT '备注',
+  `posterurl` varchar(255) DEFAULT NULL COMMENT '海报地址',
+  `scanningmax` int(11) DEFAULT NULL COMMENT '扫码次数',
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `ims_nx_code_settings` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `sitename` varchar(255) DEFAULT NULL COMMENT '网站标题',
+  `sitedomain` varchar(255) DEFAULT NULL,
+  `count` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `uniacid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+]]></install>
+	<uninstall><![CDATA[DROP TABLE IF EXISTS `ims_nx_code_ad`;
+DROP TABLE IF EXISTS `ims_nx_code_content`;
+DROP TABLE IF EXISTS `ims_nx_code_counter`;
+DROP TABLE IF EXISTS `ims_nx_code_list`;
+DROP TABLE IF EXISTS `ims_nx_code_pay`;
+DROP TABLE IF EXISTS `ims_nx_code_settings`;
+]]></uninstall>
+	<upgrade><![CDATA[upgrade.php]]></upgrade>
+</manifest>

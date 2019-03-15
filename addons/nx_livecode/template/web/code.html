@@ -1,0 +1,108 @@
+{template 'common/header'}
+<style media="screen">
+	.d {
+		margin-top: 10px;
+	}
+
+	.d_text {
+		color: #ff3c01;
+		font-weight: bold;
+	}
+
+	.SeeModal-img {
+		margin: 0 auto;
+		text-align: center;
+	}
+
+	.SeeModal-btn {
+		margin-top: 30px;
+		text-align: center;
+	}
+
+	.SeeModal-img img {
+		width: 30%;
+		margin: 0 auto;
+	}
+</style>
+	<div class="we7-page-title">二维码管理</div>
+	<div class="we7-padding-bottom clearfix">
+		<div class="pull-right">
+      <a href="{php echo $this->createWebUrl('codeadd')}" class="btn btn-primary  we7-margin-left">新增活码</a>
+		</div>
+	</div>
+	<table class="table we7-table table-hover vertical-middle ng-scope" id="js-qr-list" ng-controller="QrDisplay">
+		<colgroup>
+		<col width="50px">
+		<col width="100px">
+		<col width="70px">
+		<col width="50px">
+		<col width="60px">
+		<col width="30px">
+		<col width="140px">
+		<col>
+		</colgroup>
+    <tbody>
+      <tr>
+			<th></th>
+			<th>二维码名称</th>
+			<th>最后更新时间</th>
+			<th>扫码次数</th>
+			<th>状态</th>
+			<th class="text-left">阀值</th>
+			<th class="text-right">操作</th>
+		</tr>
+		{loop $codelist $key $value}
+    <tr>
+			<td><a href="{$path}{$value['qrcode']}" target="view_window"><img src="{$path}{$value['qrcode']}" alt=""></a></td>
+			<td title="{$value['name']}">{$value['name']}</td>
+			<td class="text-left"><?php echo date("Y-m-d ",$value['time']) ?></td>
+			<td class="text-left">{$value['scanningmax']}</td>
+			{if $value['switch'] == 1}
+			<td class="text-left" style="color: #15bf15">已开始</td>
+			{else}
+			<td class="text-left" style="color:#bdbdbd">未开始</td>
+			{/if}
+			<td>{$value['number']}</td>
+			<td>
+				<div class="link-group">
+					<a href="{php echo $this->createWebUrl('content', array('uid' => $value['uid']))}" >编辑内容</a>
+					<a href="{$path}{$value['qrcode']}" download="download"  >下载</a>
+					<a href="{php echo $this->createWebUrl('edit', array('uid' => $value['uid']))}">编辑</a>
+					<a href="{php echo $this->createWebUrl('delete', array('do' => 'delete', 'uid' => $value['uid']))}" onclick="return confirm('确认删除吗？');return false;">删除</a>
+				</div>
+			</td>
+		</tr>
+		{/loop}
+</tbody>
+</table>
+	<div class="modal fade" id="SeeModal" tabindex="-1" role="dialog" aria-labelledby="ConetentAddModal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="ModalLabel">查看海报</h4>
+				</div>
+				<div class="modal-body">
+					<div class="SeeModal-img" id="qrcode"></div>
+					<div class="SeeModal-btn">
+						<a id="downloadcode" href="#" class="btn btn-primary" download="w3logo">下载二维码</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	$('#SeeModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget)
+		var title  =  button.data('title')
+		var posterurl = button.data('url')
+		var modal = $(this)
+		modal.find("#download").attr("href",posterurl);
+		modal.find("#posterurl").attr("src",posterurl);
+	});
+
+</script>
+ {$pager}
+{template 'common/footer'}

@@ -1,0 +1,52 @@
+{template 'common/header'}
+<div class="">
+<h5 style=" padding-bottom: 15px;margin: 10px 0 40px;border-bottom: 1px solid #eee;font-weight: 400;font-size:18px;">广告设置</h5>
+<div class="we7-form ng-scope" id="js-qr-post" ng-controller="QrPost">
+	<form method="post" class="ng-pristine ng-valid">
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">广告图片</label>
+			<div class="form-controls col-sm-8">
+				{php echo tpl_form_field_image('ad-img',$code_ad_info['adimg'])}
+				<span class="help-block clearfix">
+					广告图片尺寸必须为 640X120
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">广告链接</label>
+			<div class="form-controls col-sm-8">
+				<input type="text" class="form-control" name="ad-url" value="{$code_ad_info['adurl']}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">广告开关</label>
+			<div class="form-controls col-sm-8 form-control-static">
+				<input id="open" type="radio" name="ad-switch" checked="checked" value="1">
+				<label for="open">开启</label>
+				<input id="Close" type="radio" name="ad-switch" value="2">
+				<label for="Close">关闭</label>
+			</div>
+		</div>
+		<input type="hidden" name="token" value="{$_W['token']}">
+		<input type="hidden" name="submit" value="submit">
+		<button class="btn btn-primary col-lg-2 submit btn-submit" data-loading-text="提交中..." autocomplete="off">保存</button>
+	</form>
+</div>
+</div>
+<script type="text/javascript">
+$(function() {
+	var Adswitch = "{$code_ad_info['switch']}";
+	if (Adswitch == 1) {
+		$('input:radio[name=ad-switch]:nth(0)').attr('checked',true);
+	}else if (Adswitch == 2) {
+		$('input:radio[name=ad-switch]:nth(1)').attr('checked',true);
+	}
+	$(".btn-submit").click(function(){
+			$(this).button('loading').delay(1000).queue(function() {
+			// $(this).button('reset');
+			// $(this).dequeue();
+			});
+	});
+});
+</script>
+{template 'common/footer'}

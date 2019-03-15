@@ -1,0 +1,88 @@
+{template 'common/header'}
+<div class="">
+	<h5 style=" padding-bottom: 15px;margin: 10px 0 40px;border-bottom: 1px solid #eee;font-weight: 400;font-size:18px;">编辑活码</h5>
+<div class="we7-form ng-scope" id="js-qr-post" ng-controller="QrPost">
+	<form method="post" class="ng-pristine ng-valid" onsubmit="return formcheck(this)">
+		<input type="hidden" name="id" value="">
+		<input type="hidden" name="acid" value="">
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">二维码名称</label>
+			<div class="form-controls col-sm-8">
+				<input type="text"  class="form-control" name="code-name" value="{$code_info['name']}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">阈值</label>
+			<div class="form-controls col-sm-8">
+				<input type="text" class="form-control" name="code-number" value="{$code_info['number']}">
+				<span class="help-block clearfix">
+				:阈值是指活码里面的内容展示次数，比如阈值设置100,那么活码的某个内容被展示100次后自动切换下一个内容。
+				</span>
+			</div>
+		</div>
+			<div class="form-group">
+			<label for="" class="control-label col-sm-2">二维码类型</label>
+			<div class="form-controls col-sm-8">
+				<div class="form-inline clearfix">
+					<select name="code-model" class="we7-select col-sm-2">
+						{if $code_info['type'] == '1'}
+						<option selected = "selected" value="1">连接</option>
+						<option value="2">图片</option>
+						{else}
+						<option value="1">连接</option>
+						<option selected = "selected" value="2">图片</option>
+						{/if}
+					</select>
+				</div>
+				<span class="help-block clearfix">
+					目前有2种类型的二维码,分别连接二维码和图片二维码,前者是在用户扫码以后直接跳转连接,后者是用户扫码后可以打开指定图片
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">展示模式</label>
+			<div class="form-controls col-sm-8 form-control-static">
+				<input id="loop" type="radio" name="code-radio" checked="checked" value="1">
+				<label for="loop">循环模式</label>
+				<input id="Single" type="radio" name="code-radio" value="2">
+				<label for="Single">单次模式</label>
+				<input id="fixed" type="radio" name="code-radio" value="3">
+				<label for="fixed">固定模式</label>
+				<span class="help-block">循环模式:所有内容逐个展示,到最后一个后从头开始不断循环</span>
+				<span class="help-block">单次模式:所有内容逐个展示,到最后一个后活动直接结束</span>
+				<span class="help-block">固定模式:每个用户看到内容永远不变 <span style="color: #ff4700;">阈值对固定模式不生效可不填</span></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="" class="control-label col-sm-2">活码开关</label>
+			<div class="form-controls col-sm-8 form-control-static">
+				<input id="open" type="radio" name="code-switch" checked="checked" value="1">
+				<label for="open">开启</label>
+				<input id="shut" type="radio" name="code-switch" value="2">
+				<label for="shut">关闭</label>
+				</span>
+			</div>
+		</div>
+		<input type="hidden" name="token" value="{$_W['token']}">
+		<input type="hidden" name="submit" value="submit">
+		<button class="btn btn-primary col-lg-1 submit">更新</button>
+	</form>
+</div>
+</div>
+<script type="text/javascript">
+	var radio = "{$code_info['radio']}"
+	var switchs  = "{$code_info['switch']}"
+	if (radio == "1") {
+		$('input:radio[name=code-radio]:nth(0)').attr('checked',true);
+	}else if (radio == "2") {
+		$('input:radio[name=code-radio]:nth(1)').attr('checked',true);
+	}else if (radio == "3") {
+		$('input:radio[name=code-radio]:nth(2)').attr('checked',true);
+	}
+	if (switchs == "1") {
+		$('input:radio[name=code-switch]:nth(0)').attr('checked', true);
+	} else if (switchs == "2") {
+		$('input:radio[name=code-switch]:nth(1)').attr('checked', true);
+	} 
+</script>
+{template 'common/footer'}

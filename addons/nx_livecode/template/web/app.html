@@ -1,0 +1,39 @@
+{template 'common/header'}
+<style>
+.app_info{
+	overflow: hidden;
+}
+.app_img {
+float: left;
+}
+.app_img img{
+	width: 80px;
+	margin-right: 10px;
+}
+.app_text{
+	font-size: 13px;
+}
+</style>
+<div class="row">
+	<h5 style=" padding-bottom: 15px;margin: 10px 0 20px;border-bottom: 1px solid #eee;font-weight: 400;font-size:18px;">应用推荐</h5>
+	 {loop $app['data'] $index $item}
+	 <div style="overflow: hidden; margin-bottom: 20px; border-bottom: 1px solid #eee;padding-bottom: 20px;">
+	<div class="col-md-9" >
+		<div class="app_info"> 
+		<div class="app_img">
+			<img src="&#x0068;&#x0074;&#x0074;&#x0070;&#x003a;&#x002f;&#x002f;&#x0077;&#x0071;&#x002e;&#x0061;&#x0070;&#x0070;&#x0063;&#x0078;&#x0079;&#x002e;&#x0063;&#x006f;&#x006d;&#x002f;&#x0061;&#x0064;&#x0064;&#x006f;&#x006e;&#x0073;&#x002f;&#x006e;&#x0078;&#x005f;&#x006c;&#x0069;&#x0076;&#x0065;&#x0063;&#x006f;&#x0064;&#x0065;&#x002f;&#x0069;&#x0063;&#x006f;&#x006e;&#x002e;&#x006a;&#x0070;&#x0067;" alt="">
+		</div>
+		<div class="app_text" style="padding-top: 5px;">
+		<p style="font-weight: 800">{$item['name']}</p>
+		<p>{$item['brief']}</p>
+		</div>
+		</div>
+	</div>
+	<div class="col-md-3" style="padding-top: 30px;">
+		<a style="float: right;" href="&#x0068;&#x0074;&#x0074;&#x0070;&#x003a;&#x002f;&#x002f;&#x0062;&#x0062;&#x0073;&#x002e;&#x0061;&#x0070;&#x0070;&#x0063;&#x0078;&#x0079;&#x002e;&#x0063;&#x006f;&#x006d;&#x002f;&#x0074;&#x0068;&#x0072;&#x0065;&#x0061;&#x0064;&#x002d;&#x0033;&#x0030;&#x002d;&#x0031;&#x002d;&#x0031;&#x002e;&#x0068;&#x0074;&#x006d;&#x006c;" class="btn btn-primary  we7-margin-left" target="view_window">查看详情</a>
+	</div>
+	</div>
+	
+	 {/loop}
+</div>
+{template 'common/footer'}
