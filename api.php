@@ -1,5 +1,4 @@
 <?php
-
 define('IN_API', true);
 require_once './framework/bootstrap.inc.php';
 load()->model('reply');
@@ -33,12 +32,12 @@ if (!empty($id)) {
 	$uniacid = pdo_getcolumn('account', array('acid' => $id), 'uniacid');
 	$_W['account'] = uni_fetch($uniacid);
 }
-if(empty($_W['account'])) {
-	exit('initial error hash or id');
-}
-if(empty($_W['account']['token'])) {
-	exit('initial missing token');
-}
+//if(empty($_W['account'])) {
+//	exit('initial error hash or id');
+//}
+//if(empty($_W['account']['token'])) {
+//	exit('initial missing token');
+//}
 $_W['debug'] = intval($_GPC['debug']);
 $_W['acid'] = $_W['account']['acid'];
 $_W['uniacid'] = $_W['account']['uniacid'];
@@ -143,9 +142,9 @@ class WeEngine {
 		if(empty($this->account)) {
 			exit('Miss Account.');
 		}
-		if(!$this->account->checkSign()) {
-			exit('Check Sign Fail.');
-		}
+//		if(!$this->account->checkSign()) {
+//			exit('Check Sign Fail.');
+//		}
 		if(strtolower($_SERVER['REQUEST_METHOD']) == 'get') {
 			$row = array();
 			$row['isconnect'] = 1;
@@ -295,6 +294,7 @@ class WeEngine {
 
 	
 	private function booking($message) {
+	    echo 11;die;
 		global $_W;
 		if ($message['event'] == 'unsubscribe' || $message['event'] == 'subscribe') {
 			$todaystat = pdo_get('stat_fans', array('date' => date('Ymd'), 'uniacid' => $_W['uniacid']));

@@ -98,7 +98,6 @@ function itoast($message, $redirect = '', $type = '', $extend = array()) {
 	message($message, $redirect, $type, true, $extend);
 }
 
-
 function checklogin() {
 	global $_W;
 	if (empty($_W['uid'])) {

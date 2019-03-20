@@ -5,6 +5,16 @@
  */
 defined('IN_IA') or exit('Access Denied');
 
+function activity_info($id) {
+    $id = intval($id);
+    $works = pdo_fetch('SELECT * FROM ' . tablename('activity') . ' WHERE id = :id', array(':id' => $id));
+    if(empty($works)) {
+        return error(-1, '不存在或已经删除');
+    }
+    return $works;
+}
+
+
 function activity_coupon_type_init() {
 	global $_W;
 	static $coupon_api;
