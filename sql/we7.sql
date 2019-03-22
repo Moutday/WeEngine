@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-15 14:49:07
+Date: 2019-03-22 17:47:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -214,6 +214,141 @@ INSERT INTO `ims_activity` VALUES ('15', '1', '易简读书进500强庆祝会', 
 INSERT INTO `ims_activity` VALUES ('16', '6', '此时此刻', '5', '1100.00', '广东省', '广州市', '天河区', '广东省广州市天河区广州大道中900号', '广东省', '广州市', '天河区', '广东省广州市天河区广州大道中900号', '1', '160.00', '0.00', '45.00', '0.00', 'gjj', 'u6/act+16-qr-01bc95bff1d84dfa970e9d35b83650f9.jpg', '1', '2018-12-06 10:58:38', '2018-12-06 10:58:38', '0', '113.32', '23.14', '113.32', '23.14', '');
 INSERT INTO `ims_activity` VALUES ('17', '7', '模特吉他手', '10', '1000.00', '广东省', '广州市', '天河区', '广东省广州市天河区棠东毓南路1号', '广东省', '广州市', '天河区', '广东省广州市天河区棠东东路4号', '2', '160.00', '163.00', '45.00', '47.00', '你在家门口就业绩的提升与你有能力度左右开弓……这种族维生素及时雨及其他相关维生素都匀也不能勉强可以不必备胎心有些紧张？这些天后来个人全能够意思后才说出汗', 'u7/act+17-qr-b5ac6883f09b472e83f5ee021d0e1c7e.jpg', '1', '2018-12-06 13:49:07', '2018-12-18 11:44:35', '0', '113.39', '23.13', '113.39', '23.13', '');
 INSERT INTO `ims_activity` VALUES ('18', '6', '舞蹈花开盛世', '10', '100.00', '广东省', '广州市', '天河区', '广东省广州市天河区天河路208号', '广东省', '广州市', '天河区', '广东省广州市天河区天河路208号', '1', '160.00', '0.00', '45.00', '0.00', '需要舞蹈人员', null, '1', '2018-12-18 11:52:37', '2018-12-18 11:52:37', '0', '113.32', '23.13', '113.32', '23.13', '');
+
+-- ----------------------------
+-- Table structure for ims_activity_date_rel
+-- ----------------------------
+DROP TABLE IF EXISTS `ims_activity_date_rel`;
+CREATE TABLE `ims_activity_date_rel` (
+  `activity_id` int(11) NOT NULL COMMENT '活动ID',
+  `date` date NOT NULL COMMENT '日期',
+  `type` smallint(1) NOT NULL COMMENT '类型：1 - 演出 ；2 - 排练；',
+  PRIMARY KEY (`activity_id`,`date`,`type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='活动日期';
+
+-- ----------------------------
+-- Records of ims_activity_date_rel
+-- ----------------------------
+INSERT INTO `ims_activity_date_rel` VALUES ('1', '2018-11-01', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('1', '2018-11-02', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('1', '2018-11-03', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('1', '2018-11-04', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('2', '2018-11-02', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('2', '2018-11-02', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('2', '2018-11-03', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('2', '2018-11-03', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('2', '2018-11-17', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('3', '2018-11-23', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('3', '2018-11-24', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('4', '2018-11-24', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('4', '2018-11-29', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('4', '2018-11-30', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('5', '2018-11-23', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('5', '2018-11-24', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('6', '2018-11-01', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('6', '2018-11-09', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('6', '2018-11-15', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('7', '2018-11-29', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('7', '2018-11-29', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('7', '2018-11-30', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('7', '2018-11-30', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('8', '2018-11-29', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('8', '2018-11-30', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('8', '2018-12-08', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('8', '2018-12-09', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('9', '2018-11-29', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('9', '2018-11-30', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('9', '2018-12-01', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('9', '2018-12-02', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('10', '2018-12-01', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('10', '2018-12-02', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('10', '2018-12-08', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('10', '2018-12-09', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('11', '2018-12-01', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('11', '2018-12-02', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('12', '2018-11-07', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('12', '2018-11-30', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('12', '2018-12-13', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('12', '2018-12-14', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('13', '2018-12-13', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('13', '2018-12-14', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('13', '2018-12-15', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('13', '2018-12-16', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('14', '2018-12-29', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('14', '2018-12-30', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('15', '2018-12-05', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('15', '2018-12-06', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('16', '2018-12-07', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('16', '2018-12-14', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('16', '2018-12-22', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('17', '2018-12-06', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('17', '2018-12-06', '2');
+INSERT INTO `ims_activity_date_rel` VALUES ('17', '2018-12-07', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('18', '2018-12-18', '1');
+INSERT INTO `ims_activity_date_rel` VALUES ('18', '2018-12-18', '2');
+
+-- ----------------------------
+-- Table structure for ims_activity_work_rel
+-- ----------------------------
+DROP TABLE IF EXISTS `ims_activity_work_rel`;
+CREATE TABLE `ims_activity_work_rel` (
+  `activity_id` int(11) NOT NULL COMMENT '活动ID',
+  `dance_id` int(11) NOT NULL COMMENT '舞种ID',
+  PRIMARY KEY (`activity_id`,`dance_id`),
+  UNIQUE KEY `activity_id` (`activity_id`,`dance_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='活动舞种';
+
+-- ----------------------------
+-- Records of ims_activity_work_rel
+-- ----------------------------
+INSERT INTO `ims_activity_work_rel` VALUES ('1', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('1', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('2', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('2', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('2', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('3', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('3', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('4', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('4', '10');
+INSERT INTO `ims_activity_work_rel` VALUES ('5', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('5', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('5', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('6', '2');
+INSERT INTO `ims_activity_work_rel` VALUES ('7', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('7', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('7', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('8', '2');
+INSERT INTO `ims_activity_work_rel` VALUES ('8', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '2');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '3');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '5');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '9');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '10');
+INSERT INTO `ims_activity_work_rel` VALUES ('9', '11');
+INSERT INTO `ims_activity_work_rel` VALUES ('10', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('10', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('10', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('11', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('11', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('12', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('12', '10');
+INSERT INTO `ims_activity_work_rel` VALUES ('13', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('13', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('13', '10');
+INSERT INTO `ims_activity_work_rel` VALUES ('14', '3');
+INSERT INTO `ims_activity_work_rel` VALUES ('14', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('14', '7');
+INSERT INTO `ims_activity_work_rel` VALUES ('14', '10');
+INSERT INTO `ims_activity_work_rel` VALUES ('15', '5');
+INSERT INTO `ims_activity_work_rel` VALUES ('15', '9');
+INSERT INTO `ims_activity_work_rel` VALUES ('16', '6');
+INSERT INTO `ims_activity_work_rel` VALUES ('17', '9');
+INSERT INTO `ims_activity_work_rel` VALUES ('18', '2');
+INSERT INTO `ims_activity_work_rel` VALUES ('18', '4');
+INSERT INTO `ims_activity_work_rel` VALUES ('18', '5');
 
 -- ----------------------------
 -- Table structure for ims_article_category
@@ -2593,7 +2728,7 @@ CREATE TABLE `ims_stat_visit` (
   KEY `date` (`date`),
   KEY `module` (`module`),
   KEY `uniacid` (`uniacid`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of ims_stat_visit
@@ -2602,6 +2737,7 @@ INSERT INTO `ims_stat_visit` VALUES ('1', '1', 'we7_account', '8', '20181210', '
 INSERT INTO `ims_stat_visit` VALUES ('2', '1', 'we7_account', '29', '20190313', 'web');
 INSERT INTO `ims_stat_visit` VALUES ('3', '1', 'we7_account', '25', '20190314', 'web');
 INSERT INTO `ims_stat_visit` VALUES ('4', '3', 'we7_account', '3', '20190314', 'web');
+INSERT INTO `ims_stat_visit` VALUES ('5', '0', 'we7_api', '4', '20190319', 'web');
 
 -- ----------------------------
 -- Table structure for ims_system_stat_visit
@@ -3163,6 +3299,38 @@ CREATE TABLE `ims_wechat_news` (
 -- ----------------------------
 -- Records of ims_wechat_news
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for ims_work
+-- ----------------------------
+DROP TABLE IF EXISTS `ims_work`;
+CREATE TABLE `ims_work` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '父ID',
+  `name` varchar(20) NOT NULL COMMENT '工作名称',
+  `sort_weight` int(11) DEFAULT '0' COMMENT '排序权重，值越大排名越高',
+  `state` smallint(1) NOT NULL DEFAULT '0' COMMENT '状态：-1 - 删除；1 - 正常',
+  `create_user` int(11) NOT NULL COMMENT '创建用户',
+  `last_update_user` int(11) DEFAULT NULL COMMENT '最后更新用户',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `last_update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='舞种';
+
+-- ----------------------------
+-- Records of ims_work
+-- ----------------------------
+INSERT INTO `ims_work` VALUES ('1', '0', '流行', '100', '1', '1', null, '2018-11-12 16:47:16', null);
+INSERT INTO `ims_work` VALUES ('2', '1', '爵士舞', '3', '1', '1', '1', '2018-11-12 16:47:27', '2018-11-16 10:24:49');
+INSERT INTO `ims_work` VALUES ('3', '1', 'breaking', '2', '1', '1', '1', '2018-11-12 16:47:34', '2018-11-16 10:24:44');
+INSERT INTO `ims_work` VALUES ('4', '1', 'poping', '0', '1', '1', '1', '2018-11-12 16:47:39', '2018-11-12 16:51:06');
+INSERT INTO `ims_work` VALUES ('5', '1', 'locking', '50', '1', '1', '1', '2018-11-12 16:48:16', '2018-11-12 16:48:21');
+INSERT INTO `ims_work` VALUES ('6', '1', 'hiphop', '49', '1', '1', '1', '2018-11-12 16:48:34', '2018-11-12 16:48:44');
+INSERT INTO `ims_work` VALUES ('7', '1', '其他流行舞', '48', '1', '1', '1', '2018-11-12 16:49:18', '2018-11-20 18:37:00');
+INSERT INTO `ims_work` VALUES ('8', '0', '其他', '47', '1', '1', '1', '2018-11-12 16:49:32', '2018-12-06 14:37:02');
+INSERT INTO `ims_work` VALUES ('9', '8', '民族舞', '46', '1', '1', null, '2018-11-12 16:50:12', null);
+INSERT INTO `ims_work` VALUES ('10', '8', '现代舞', '45', '1', '1', '1', '2018-11-12 16:50:26', '2018-11-21 09:54:32');
+INSERT INTO `ims_work` VALUES ('11', '8', '其他舞种', '44', '1', '1', '1', '2018-11-12 16:50:40', '2018-11-21 09:58:38');
 
 -- ----------------------------
 -- Table structure for ims_wxapp_general_analysis

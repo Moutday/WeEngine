@@ -77,13 +77,14 @@ if($_GPC['__input']['method'] == 'a-get'){
 
 //发布活动
 if($_GPC['__input']['method'] == 'a-add'){
+   // print_r($_GPC);die;
 //act
 //
 
 //danceIds: ["5", "2"]
 //pl:["2019-03-21", "2019-03-28"]
 //yc: ["2019-03-27", "2019-03-22", "2019-03-29"]
-    $postData = $_GPC['__input'];
+    $postData = $_GPC['__input']['params'];
     $id = intval($postData['id']);
     $activitys = table('activity')->searchWithId($id)->get();
     $reward = intval($postData['act']['reward']) ? intval($postData['act']['reward']) :     setJson(1011, '请输入酬劳', []);
@@ -96,11 +97,14 @@ if($_GPC['__input']['method'] == 'a-add'){
     $rehearsal_detail_address = trim($postData['act']['raddr']) ? trim($postData['act']['raddr']) :  setJson(1011, '请输入活动排练地址', []);
     $show_detail_address = trim($postData['act']['saddr']) ? trim($postData['act']['saddr']) :  setJson(1011, '请输入活动演出地址', []);
     $data = array(
-        'user_id' => 111111111,
+        'name' => $name,
+        'user_id' => 1111,
         'rehearsal_detail_address' => $rehearsal_detail_address,
         'show_detail_address' => $show_detail_address,
-        'minStature' => $minStature,
-        'minWeight' => $minWeight,
+        'min_stature' => $minStature,
+        'max_stature' => intval($postData['act']['maxStature']),
+        'max_stature' => intval($postData['act']['maxWeight']),
+        'min_weight' => $minWeight,
         'reward' => $reward,
         'state' => 1,
         'remark' => $remark,
@@ -114,9 +118,11 @@ if($_GPC['__input']['method'] == 'a-add'){
     );
 
     if (!empty($activitys['id'])) {
+        $data['last_update_time'] = date('Y-m-d H:i:s',time());
         pdo_update('activity', $data, array('id' => $id));
     } else {
         try{
+            $data['create_time'] = date('Y-m-d H:i:s',time());
             pdo_begin();
             pdo_insert('activity', $data);
             $actId = pdo_insertid();
@@ -135,7 +141,7 @@ if($_GPC['__input']['method'] == 'a-add'){
 
             foreach ($postData['danceIds'] as $k=>$v){
                 $actWork[$k]['activity_id'] = $actId;
-                $actWork[$k]['dance_id'] = $v['danceIds'];
+                $actWork[$k]['dance_id'] = $v;
             }
             pdo_insert('activity_date_rel', $data);
             pdo_insert('activity_work_rel', $actWork);
