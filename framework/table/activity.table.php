@@ -20,4 +20,9 @@ class ActivityTable extends We7Table {
     public function searchWithTitle($title) {
         return $this->query->where('name LIKE', "%{$title}%");
     }
+
+    public function searchWithId($id) {
+        $this->query->where('id', $id);
+        return $this;
+    }
 }

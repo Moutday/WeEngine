@@ -79,24 +79,74 @@ if($_GPC['__input']['method'] == 'a-get'){
 if($_GPC['__input']['method'] == 'a-add'){
 //act
 //
-//gender "1"
-//latitude:23.08331
-//longitude:113.3172
-//mark:"24"
-//minStature:160
-//minWeight:45
-//name:"412"
-//platitude:23.08331
-//plongitude:113.3172
-//population:111
-//raddr:"广东省广州市海珠区广州大道南999号"
-//remark:"24"
-//reward:21
-//saddr:"广东省广州市海珠区同福东路640号"
-//sex:1
+
 //danceIds: ["5", "2"]
 //pl:["2019-03-21", "2019-03-28"]
 //yc: ["2019-03-27", "2019-03-22", "2019-03-29"]
+    $postData = $_GPC['__input'];
+    $id = intval($postData['id']);
+    $activitys = table('activity')->searchWithId($id)->get();
+    $reward = intval($postData['act']['reward']) ? intval($postData['act']['reward']) :     setJson(1011, '请输入酬劳', []);
+    $population = intval($postData['act']['population']) ? intval($postData['act']['population']) :     setJson(1011, '请输入人数', []);
+    $minStature = intval($postData['act']['minStature']) ? intval($postData['act']['minStature']) :     setJson(1011, '请输入身高', []);
+    $minWeight = intval($postData['act']['minWeight']) ? intval($postData['act']['minWeight']) :     setJson(1011, '请输入体重', []);
+    $gender = intval($postData['act']['gender']) ? intval($postData['act']['gender']) :     setJson(1011, '请选择性别', []);
+    $name = trim($postData['act']['name']) ? trim($postData['act']['name']) :  setJson(1011, '请输入活动名称', []);
+    $remark = trim($postData['act']['remark']) ? trim($postData['act']['remark']) :  setJson(1011, '请输入活动内容', []);
+    $rehearsal_detail_address = trim($postData['act']['raddr']) ? trim($postData['act']['raddr']) :  setJson(1011, '请输入活动排练地址', []);
+    $show_detail_address = trim($postData['act']['saddr']) ? trim($postData['act']['saddr']) :  setJson(1011, '请输入活动演出地址', []);
+    $data = array(
+        'user_id' => 111111111,
+        'rehearsal_detail_address' => $rehearsal_detail_address,
+        'show_detail_address' => $show_detail_address,
+        'minStature' => $minStature,
+        'minWeight' => $minWeight,
+        'reward' => $reward,
+        'state' => 1,
+        'remark' => $remark,
+        'gender' => $gender,
+        'population' => $population,
+        'latitude' => $postData['act']['latitude'],
+        'longitude' => $postData['act']['longitude'],
+        'platitude' => $postData['act']['platitude'],
+        'plongitude' => $postData['act']['plongitude'],
+        'mark' => safe_gpc_html(htmlspecialchars_decode($postData['act']['mark'])),
+    );
+
+    if (!empty($activitys['id'])) {
+        pdo_update('activity', $data, array('id' => $id));
+    } else {
+        try{
+            pdo_begin();
+            pdo_insert('activity', $data);
+            $actId = pdo_insertid();
+            $actDate[0]['date'] = array_shift($postData['pl']) ?  array_shift($postData['pl']) : '';
+            $actDate[0]['type'] = 2;
+            $actDate[0]['activity_id'] = $actId;
+            $actDate[1]['date'] = end($postData['pl']) ?  end($postData['pl']) : '';
+            $actDate[1]['type'] = 2;
+            $actDate[1]['activity_id'] = $actId;
+            $actDate[2]['activity_id'] = $actId;
+            $actDate[2]['date'] = array_shift($postData['yc']) ?  array_shift($postData['yc']) : '';
+            $actDate[2]['type'] = 1;
+            $actDate[3]['activity_id'] = $actId;
+            $actDate[3]['date'] = end($postData['yc']) ?  end($postData['yc']) : '';
+            $actDate[3]['type'] = 1;
+
+            foreach ($postData['danceIds'] as $k=>$v){
+                $actWork[$k]['activity_id'] = $actId;
+                $actWork[$k]['dance_id'] = $v['danceIds'];
+            }
+            pdo_insert('activity_date_rel', $data);
+            pdo_insert('activity_work_rel', $actWork);
+            pdo_commit();
+        }catch (\Exception $e){
+            pdo_rollback();
+        }
+
+    }
+
+
 
 }
 
