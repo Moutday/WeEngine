@@ -21,6 +21,63 @@ if(!empty($_GPC['appid'])) {
 	}
 }
 
+//获取个人信息
+if($_GPC['__input']['method'] == 'r-info'){
+    setJson(0, 'success', []);
+}
+
+/*
+* 从小程序登录与注册，获取用户openid和信息
+* $code = '003eJ5IZ1rE6lX0RioJZ1xPcIZ1eJ5IB'; jscode
+* $iv = 'xXlcTnILAjHeNdUFfNrRSg==';
+* $encrypt_data 加密用户信息,含有openid
+*/
+if($_GPC['__input']['method'] == 'r-info'){
+    $secret = '046b7fef5e1a6ae799cf95d539f20c06';
+    $appid = '';
+        $post_data = json_decode($GLOBALS['HTTP_RAW_POST_DATA'],true);
+        if(empty($post_data)) {
+            self::_setJson(1001,'参数错误','');
+        }
+        $code = $post_data['code'];
+        $iv = $post_data ['iv'];
+        $encrypt_data = $post_data ['encryptedData'];
+        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
+        //{"session_key":"Ks3xrtbke6McnCwPm6467w==","expires_in":7200,"openid":"odM_50LGZKsWqE7xh61UjvU-dHOE"}
+        //print_r($url);
+        $return_message = json_decode(getRequest($url),true);
+        if(empty($return_message['session_key'])) {
+            self::_setJson(1001,'用户不存在','');
+        }
+        $session_key = $return_message['session_key'];
+        $pc = new \Common\Lib\wxbizdatacrypt($this->pro_info['appid'], $session_key);
+        $pc->wxbizdatacrypt($this->pro_info['appid'], $session_key);
+        $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
+        if ($user_info === false || $errCode !== 0) {
+            self::_setJson(1001,'解密失败','');
+        } else {
+
+            $user_info = json_decode($user_info, true);
+            $pro_member_info =  ProMemberService::fetch_by_pro_openid($user_info['openId']);
+            if(!empty($pro_member_info)) {
+                //登录成功，返回wid,api_session_key
+                $api_session_key = ProMemberService::dologin($pro_member_info['id']);
+                $result['wid'] = $pro_member_info['id'];
+                $result['api_session_key'] = $api_session_key;
+            }else{
+                $result['api_session_key'] =  ProMemberService::pro_register($user_info);
+            }
+            $emoji = new \Common\Lib\emoji();
+            $user_info = ProMemberService::fetch_by_id($pro_member_info['id']);
+            $member['wid'] =  $user_info['id'];
+            $member['type'] =  $user_info['type'];
+            $member['pro_headimgurl'] =  $user_info['pro_headimgurl'];
+            $member['pro_nickname']   =  $user_info['username'];
+            $member['api_session_key'] =  $result['api_session_key'];
+            self::_setJson(0, 'ok', $member);
+        }
+}
+
 if($_GPC['__input']['interId'] == 80002){
     setJson(0, 'success', []);
 }
@@ -110,12 +167,13 @@ if($_GPC['__input']['method'] == 'a-add'){
         'remark' => $remark,
         'gender' => $gender,
         'population' => $population,
-        'latitude' => $postData['act']['latitude'],
-        'longitude' => $postData['act']['longitude'],
-        'platitude' => $postData['act']['platitude'],
-        'plongitude' => $postData['act']['plongitude'],
+        'latitude' => sprintf("%.2f",$postData['act']['latitude']),
+        'longitude' => sprintf("%.2f",$postData['act']['longitude']),
+        'platitude' => sprintf("%.2f",$postData['act']['platitude']),
+        'plongitude' => sprintf("%.2f",$postData['act']['plongitude']),
         'mark' => safe_gpc_html(htmlspecialchars_decode($postData['act']['mark'])),
     );
+
 
     if (!empty($activitys['id'])) {
         $data['last_update_time'] = date('Y-m-d H:i:s',time());
@@ -126,28 +184,36 @@ if($_GPC['__input']['method'] == 'a-add'){
             pdo_begin();
             pdo_insert('activity', $data);
             $actId = pdo_insertid();
-            $actDate[0]['date'] = array_shift($postData['pl']) ?  array_shift($postData['pl']) : '';
-            $actDate[0]['type'] = 2;
-            $actDate[0]['activity_id'] = $actId;
-            $actDate[1]['date'] = end($postData['pl']) ?  end($postData['pl']) : '';
-            $actDate[1]['type'] = 2;
-            $actDate[1]['activity_id'] = $actId;
-            $actDate[2]['activity_id'] = $actId;
-            $actDate[2]['date'] = array_shift($postData['yc']) ?  array_shift($postData['yc']) : '';
-            $actDate[2]['type'] = 1;
-            $actDate[3]['activity_id'] = $actId;
-            $actDate[3]['date'] = end($postData['yc']) ?  end($postData['yc']) : '';
-            $actDate[3]['type'] = 1;
+            $actDate['date'] = array_shift($postData['pl']) ?  array_shift($postData['pl']) : '';
+            $actDate['type'] = 2;
+            $actDate['activity_id'] = $actId;
+            pdo_insert('activity_date_rel', $actDate);
+
+            $actDate['date'] = end($postData['pl']) ?  end($postData['pl']) : '';
+            $actDate['type'] = 2;
+            $actDate['activity_id'] = $actId;
+            pdo_insert('activity_date_rel', $actDate);
+
+            $actDate['activity_id'] = $actId;
+            $actDate['date'] = array_shift($postData['yc']) ?  array_shift($postData['yc']) : '';
+            $actDate['type'] = 1;
+            pdo_insert('activity_date_rel', $actDate);
+
+            $actDate['activity_id'] = $actId;
+            $actDate['date'] = end($postData['yc']) ?  end($postData['yc']) : '';
+            $actDate['type'] = 1;
+            pdo_insert('activity_date_rel', $actDate);
 
             foreach ($postData['danceIds'] as $k=>$v){
-                $actWork[$k]['activity_id'] = $actId;
-                $actWork[$k]['dance_id'] = $v;
+                $actWork['activity_id'] = $actId;
+                $actWork['dance_id'] = $v;
+                pdo_insert('activity_work_rel', $actWork);
             }
-            pdo_insert('activity_date_rel', $data);
-            pdo_insert('activity_work_rel', $actWork);
             pdo_commit();
+            setJson(0, 'success', $works);
         }catch (\Exception $e){
             pdo_rollback();
+            setJson(1001, '发布错误', []);
         }
 
     }
@@ -157,10 +223,7 @@ if($_GPC['__input']['method'] == 'a-add'){
 }
 
 
-//获取个人信息
-if($_GPC['__input']['method'] == 'r-info'){
-    setJson(0, 'success', []);
-}
+
 
 //工作种类
 if($_GPC['__input']['method'] == 'a-dances'){
