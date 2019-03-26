@@ -1,30 +1,18 @@
 <?php defined('IN_IA') or exit('Access Denied');?><?php (!empty($this) && $this instanceof WeModuleSite || 1) ? (include $this->template('common/header', TEMPLATE_INCLUDEPATH)) : (include template('common/header', TEMPLATE_INCLUDEPATH));?>
 <div class="we7-page-title">文章管理</div>
 <ul class="we7-page-tab">
-	<li <?php  if($do == 'list') { ?>class="active"<?php  } ?>><a href="<?php  echo url('article/news/list');?>">新闻列表11</a></li>
-	<li <?php  if($do == 'category' || $do == 'category_post') { ?>class="active"<?php  } ?>><a href="<?php  echo url('article/news/category');?>">新闻分类</a></li>
+	<li <?php  if($do == 'list') { ?>class="active"<?php  } ?>><a href="<?php  echo url('site/entry/users',array('m' => 'we7_demo'));?>">用户列表</a></li>
 </ul>
 <?php  if($do == 'list') { ?>
 <div class="clearfix">
 	<form action="" method="get" class="we7-form" role="form">
-		<input type="hidden" name="c" value="article">
+		<input type="hidden" name="c" value="activity">
 		<input type="hidden" name="a" value="news">
 		<input type="hidden" name="do" value="list">
 		<input type="hidden" name="cateid" value="<?php  echo $_GPC['cateid'];?>">
 		<input type="hidden" name="createtime" value="<?php  echo $_GPC['createtime'];?>">
 		<div class="form-group">
-			<label class="col-sm-2 control-label">新闻分类</label>
-			<div class="form-controls col-sm-8">
-				<div class="btn-group we7-btn-group">
-					<a href="<?php  echo filter_url('cateid:0');?>" class="btn <?php  if($_GPC['cateid'] == 0) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>">不限</a>
-					<?php  if(is_array($categorys)) { foreach($categorys as $category) { ?>
-					<a href="<?php  echo filter_url('cateid:' . $category['id']);?>" class="btn <?php  if($_GPC['cateid'] == $category['id']) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>"><?php  echo $category['title'];?></a>
-					<?php  } } ?>
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-2 control-label">添加时间</label>
+			<label class="col-sm-2 control-label">注册时间</label>
 			<div class="form-controls col-sm-8">
 				<div class="btn-group we7-btn-group">
 					<a href="<?php  echo filter_url('createtime:0');?>" class="btn <?php  if($_GPC['createtime'] == 0) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>">不限</a>
@@ -36,7 +24,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-2 control-label">标题</label>
+			<label class="col-sm-2 control-label">用户名称</label>
 			<div class="input-group col-sm-4 pull-left">
 				<input class="form-control" name="title" id="" type="text" value="<?php  echo $_GPC['title'];?>">
 				<div class="input-group-btn">
@@ -45,7 +33,6 @@
 			</div>
 			<div class="pull-right">
 				<a href="javascript:;" data-toggle="modal" data-target="#displaysetting" class="btn btn-primary">排序设置</a>
-				<a href="<?php  echo url('article/news/post');?>" class="btn btn-primary">添加新闻</a>
 			</div>
 		</div>
 	</form>
@@ -59,42 +46,41 @@
 		<col width="140px"/>
 		<col width="120px"/>
 		<tr>
-			<th>排序</th>
-			<th>阅读次数</th>
-			<th>标题</th>
-			<th>所属分类</th>
-			<th>在首页显示</th>
-			<th>是否显示</th>
-			<th>添加时间</th>
+			<th>活动名称</th>
+			<th>用户ID</th>
+			<th>薪资</th>
+			<th>微信群二维码URL</th>
+			<th>创建时间</th>
+			<th>最后更新时间</th>
 			<th class="text-right">操作</th>
 		</tr>
-		<?php  if(is_array($news)) { foreach($news as $new) { ?>
+		<?php  if(is_array($activitys)) { foreach($activitys as $list) { ?>
 		<tr>
 			<td>
-				<span><?php  echo $new['displayorder'];?></span>
+			<span><?php  echo $list['name'];?></span>
 			</td>
 			<td>
-				<span><?php  echo $new['click'];?></span>
+				<span><?php  echo $list['user_id'];?></span>
 			</td>
 			<td>
-				<span><?php  echo $new['title'];?></span>
-			</td>
-			<td><?php  echo $categorys[$new['cateid']]['title'];?></td>
-			<td>
-				<?php  if($new['is_show_home'] == 1) { ?>
-				<span class="label label-success">是</span>
-				<?php  } else { ?>
-				<span class="label label-danger">否</span>
-				<?php  } ?>
+				<span><?php  echo $list['reward'];?></span>
 			</td>
 			<td>
-				<?php  if($new['is_display'] == 1) { ?>
-					<span class="label label-success">显示中</span>
-				<?php  } else { ?>
-					<span class="label label-danger">已隐藏</span>
-				<?php  } ?>
+				<span><?php  echo $list['group_code_url'];?></span>
 			</td>
-			<td class=""><?php  echo date('Y-m-d H:i', $new['createtime']);?></td>
+			<td>
+			<?php  if($list['state'] == 1) { ?>
+			<span class="label label-success">发布中</span>
+			<?php  } else if($list['state'] == 2) { ?>
+			<span class="label label-danger">满人</span>
+			<?php  } else if($list['state'] == 3) { ?>
+			<span class="label label-danger">已结束</span>
+			{elseif}
+			<span class="label label-danger">取消活动</span>
+			<?php  } ?>
+			</td>
+			<td class=""><?php  echo $list['create_time'];?></td>
+			<td class=""><?php  echo $list['last_update_time'];?></td>
 			<td>
 				<div class="link-group">
 					<a href="<?php  echo url('article/news/post', array('id' => $new['id']));?>">编辑</a>

@@ -38,7 +38,8 @@
 	<bindings>
 		<menu>
 			<entry title="活动管理" do="news" state="" direct="false" />
-			<entry title="活动用户" do="ad" state="" direct="false" />
+			<entry title="活动用户" do="user" state="" direct="false" />
+			<entry title="工作分类" do="work" state="" direct="false" />
 		</menu>
 	</bindings>
 	<install><![CDATA[CREATE TABLE IF NOT EXISTS `ims_nx_code_ad` (

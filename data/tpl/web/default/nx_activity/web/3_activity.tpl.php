@@ -1,13 +1,13 @@
 <?php defined('IN_IA') or exit('Access Denied');?><?php (!empty($this) && $this instanceof WeModuleSite || 1) ? (include $this->template('common/header', TEMPLATE_INCLUDEPATH)) : (include template('common/header', TEMPLATE_INCLUDEPATH));?>
 <div class="we7-page-title">文章管理</div>
 <ul class="we7-page-tab">
-	<li <?php  if($do == 'list') { ?>class="active"<?php  } ?>><a href="<?php  echo url('article/news/list');?>">活动列表</a></li>
+	<li <?php  if($do == 'list') { ?>class="active"<?php  } ?>><a href="<?php  echo url('site/entry/news');?>">活动列表</a></li>
 	<li <?php  if($do == 'category' || $do == 'category_post') { ?>class="active"<?php  } ?>><a href="<?php  echo url('article/news/category');?>">新闻分类</a></li>
 </ul>
 <?php  if($do == 'list') { ?>
 <div class="clearfix">
 	<form action="" method="get" class="we7-form" role="form">
-		<input type="hidden" name="c" value="article">
+		<input type="hidden" name="c" value="activity">
 		<input type="hidden" name="a" value="news">
 		<input type="hidden" name="do" value="list">
 		<input type="hidden" name="cateid" value="<?php  echo $_GPC['cateid'];?>">
@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label class="col-sm-2 control-label">标题</label>
+			<label class="col-sm-2 control-label">活动名称</label>
 			<div class="input-group col-sm-4 pull-left">
 				<input class="form-control" name="title" id="" type="text" value="<?php  echo $_GPC['title'];?>">
 				<div class="input-group-btn">

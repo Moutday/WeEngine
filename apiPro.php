@@ -35,9 +35,11 @@ if($_GPC['__input']['method'] == 'r-info'){
 if($_GPC['__input']['method'] == 'r-info'){
     $secret = '046b7fef5e1a6ae799cf95d539f20c06';
     $appid = '';
-        $post_data = json_decode($GLOBALS['HTTP_RAW_POST_DATA'],true);
+    load()->func('communication');
+
+    $post_data = json_decode($GLOBALS['HTTP_RAW_POST_DATA'],true);
         if(empty($post_data)) {
-            self::_setJson(1001,'参数错误','');
+            setJson(1001,'参数错误','');
         }
         $code = $post_data['code'];
         $iv = $post_data ['iv'];
@@ -45,16 +47,16 @@ if($_GPC['__input']['method'] == 'r-info'){
         $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
         //{"session_key":"Ks3xrtbke6McnCwPm6467w==","expires_in":7200,"openid":"odM_50LGZKsWqE7xh61UjvU-dHOE"}
         //print_r($url);
-        $return_message = json_decode(getRequest($url),true);
+        $return_message = json_decode(ihttp_get($url));
         if(empty($return_message['session_key'])) {
-            self::_setJson(1001,'用户不存在','');
+            setJson(1001,'用户不存在','');
         }
         $session_key = $return_message['session_key'];
         $pc = new \Common\Lib\wxbizdatacrypt($this->pro_info['appid'], $session_key);
         $pc->wxbizdatacrypt($this->pro_info['appid'], $session_key);
         $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
         if ($user_info === false || $errCode !== 0) {
-            self::_setJson(1001,'解密失败','');
+            setJson(1001,'解密失败','');
         } else {
 
             $user_info = json_decode($user_info, true);
@@ -74,7 +76,7 @@ if($_GPC['__input']['method'] == 'r-info'){
             $member['pro_headimgurl'] =  $user_info['pro_headimgurl'];
             $member['pro_nickname']   =  $user_info['username'];
             $member['api_session_key'] =  $result['api_session_key'];
-            self::_setJson(0, 'ok', $member);
+            setJson(0, 'ok', $member);
         }
 }
 
@@ -134,13 +136,6 @@ if($_GPC['__input']['method'] == 'a-get'){
 
 //发布活动
 if($_GPC['__input']['method'] == 'a-add'){
-   // print_r($_GPC);die;
-//act
-//
-
-//danceIds: ["5", "2"]
-//pl:["2019-03-21", "2019-03-28"]
-//yc: ["2019-03-27", "2019-03-22", "2019-03-29"]
     $postData = $_GPC['__input']['params'];
     $id = intval($postData['id']);
     $activitys = table('activity')->searchWithId($id)->get();
@@ -173,8 +168,6 @@ if($_GPC['__input']['method'] == 'a-add'){
         'plongitude' => sprintf("%.2f",$postData['act']['plongitude']),
         'mark' => safe_gpc_html(htmlspecialchars_decode($postData['act']['mark'])),
     );
-
-
     if (!empty($activitys['id'])) {
         $data['last_update_time'] = date('Y-m-d H:i:s',time());
         pdo_update('activity', $data, array('id' => $id));
@@ -215,10 +208,47 @@ if($_GPC['__input']['method'] == 'a-add'){
             pdo_rollback();
             setJson(1001, '发布错误', []);
         }
-
     }
+}
 
 
+//修改个人信息
+if($_GPC['__input']['method'] == 'r-add'){
+    $postData = $_GPC['__input']['params'];
+    $postData['uid'] = 1;
+    $uid = intval($postData['uid']) ? intval($postData['uid']):     setJson(1011, '用户id错误', []);
+
+    $data = array(
+        'birthday' => $postData['birthday'],
+        'bust' => $postData['bust'],
+        'city' => $postData['city'],
+        'country' => $postData['country'],
+        'county' => $postData['county'],
+        'dance_age' => $postData['dance_age'],
+        'gender' => $postData['gender'],
+        'hip' => $postData['hip'],
+        'province' => $postData['province'],
+        'stature' => $postData['stature'],
+        'real_name' => $postData['username'],
+        'waist' => $postData['waist'],
+        'weight' => $postData['weight'],
+    );
+    try{
+        pdo_begin();
+        pdo_update('user_resume', $data, array('user_id' => $uid));
+        $resume = pdo_get('user_resume',array('user_id' => $uid));
+        pdo_delete('resume_work_rel',array('resume_id' => $resume['id']));
+        foreach ($postData['danceIds'] as $k=>$v){
+            $work['resume_id'] = $resume['id'];
+            $work['dance_id'] = $v;
+            pdo_insert('resume_work_rel', $work);
+        }
+        pdo_commit();
+        setJson(0, 'success', []);
+    }catch (\Exception $e){
+        pdo_rollback();
+        setJson(1001, '修改错误', []);
+    }
 
 }
 
@@ -243,7 +273,6 @@ if($_GPC['__input']['method'] == 'a-dances'){
 if($_GPC['__input']['method'] == 'p-cities'){
     $citys = array('广州市','深圳市');
     setJson(0, 'success', $citys);
-
 }
 
 if ($do == 'login') {
