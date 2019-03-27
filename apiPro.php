@@ -32,28 +32,25 @@ if($_GPC['__input']['method'] == 'r-info'){
 * $iv = 'xXlcTnILAjHeNdUFfNrRSg==';
 * $encrypt_data 加密用户信息,含有openid
 */
-if($_GPC['__input']['method'] == 'r-info'){
+if($_GPC['__input']['method'] == 'r-info' || $_GPC['__input']['interId'] == 80002){
     $secret = '046b7fef5e1a6ae799cf95d539f20c06';
-    $appid = '';
+    $appid = 'wxa5a1cce830046e02';
     load()->func('communication');
+    $post_data = $_GPC['__input']['params'];
 
-    $post_data = json_decode($GLOBALS['HTTP_RAW_POST_DATA'],true);
-        if(empty($post_data)) {
-            setJson(1001,'参数错误','');
-        }
-        $code = $post_data['code'];
-        $iv = $post_data ['iv'];
-        $encrypt_data = $post_data ['encryptedData'];
-        $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
+    $code = $post_data['code'];
+    $iv = $post_data ['iv'];
+    $encrypt_data = $post_data ['encryptedData'];
+    $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
         //{"session_key":"Ks3xrtbke6McnCwPm6467w==","expires_in":7200,"openid":"odM_50LGZKsWqE7xh61UjvU-dHOE"}
-        //print_r($url);
-        $return_message = json_decode(ihttp_get($url));
-        if(empty($return_message['session_key'])) {
+    $return_message = json_decode(ihttp_get($url));
+
+    if(empty($return_message['session_key'])) {
             setJson(1001,'用户不存在','');
         }
         $session_key = $return_message['session_key'];
-        $pc = new \Common\Lib\wxbizdatacrypt($this->pro_info['appid'], $session_key);
-        $pc->wxbizdatacrypt($this->pro_info['appid'], $session_key);
+        $pc = new wxbizdatacrypt($appid, $session_key);
+        $pc->wxbizdatacrypt($appid, $session_key);
         $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
         if ($user_info === false || $errCode !== 0) {
             setJson(1001,'解密失败','');

@@ -5,11 +5,6 @@
  *
  * @copyright Copyright (c) 1998-2014 Tencent Inc.
  */
-namespace Common\Lib;
-
-
-
-
 
 class wxbizdatacrypt
 {
