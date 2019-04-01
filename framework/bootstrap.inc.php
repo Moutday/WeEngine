@@ -25,11 +25,12 @@ if(!file_exists($configfile)) {
 		exit('配置文件不存在或是不可读，请检查“data/config”文件或是重新安装！');
 	}
 }
-
 require $configfile;
 require IA_ROOT . '/framework/version.inc.php';
 require IA_ROOT . '/framework/const.inc.php';
 require IA_ROOT . '/framework/class/loader.class.php';
+
+
 load()->func('global');
 load()->func('compat');
 load()->func('pdo');

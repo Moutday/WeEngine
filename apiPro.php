@@ -4,6 +4,11 @@ require_once './framework/bootstrap.inc.php';
 load()->app('common');
 load()->classs('wesession');
 $hash = $_GPC['hash'];
+$url_arr = explode('/', $_SERVER['HTTP_REFERER']);
+if($url_arr[3] != 'wxa5a1cce830046e02'){
+    setJson(1001, 'fail', []);
+}
+$appid = 'wxa5a1cce830046e02';
 if(!empty($hash)) {
 	$id = pdo_fetchcolumn("SELECT acid FROM " . tablename('account') . " WHERE hash = :hash", array(':hash' => $hash));
 }
@@ -26,13 +31,26 @@ if($_GPC['__input']['method'] == 'r-info'){
     setJson(0, 'success', []);
 }
 
+//获取个人信息
+if($_GPC['__input']['interId'] == 80003){
+
+    $post_data = $_GPC['__input']['params'];
+    $user_info['app_id'] = $appid;
+    $user_info['nick_name'] = $post_data['nickname'];
+    $user_info['gender'] = intval($post_data['gender']);
+    $user_info['headimgurl'] = $post_data['avatarUrl'];
+    $user_info['reg_time'] = date("Y-m-d H:i:s",time());
+    pdo_insert('user_info', $user_info);
+    $uid['uid'] = pdo_insertid();
+    setJson(0, 'success', $uid);
+}
 /*
 * 从小程序登录与注册，获取用户openid和信息
 * $code = '003eJ5IZ1rE6lX0RioJZ1xPcIZ1eJ5IB'; jscode
 * $iv = 'xXlcTnILAjHeNdUFfNrRSg==';
 * $encrypt_data 加密用户信息,含有openid
 */
-if($_GPC['__input']['method'] == 'r-info' || $_GPC['__input']['interId'] == 80002){
+if($_GPC['__input']['method'] == 'r-info'){
     $secret = '046b7fef5e1a6ae799cf95d539f20c06';
     $appid = 'wxa5a1cce830046e02';
     load()->func('communication');
@@ -43,8 +61,8 @@ if($_GPC['__input']['method'] == 'r-info' || $_GPC['__input']['interId'] == 8000
     $encrypt_data = $post_data ['encryptedData'];
     $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
         //{"session_key":"Ks3xrtbke6McnCwPm6467w==","expires_in":7200,"openid":"odM_50LGZKsWqE7xh61UjvU-dHOE"}
-    $return_message = json_decode(ihttp_get($url));
-
+    $wxInfo = ihttp_get($url);
+    $return_message = json_decode($wxInfo['content'],true);
     if(empty($return_message['session_key'])) {
             setJson(1001,'用户不存在','');
         }
@@ -52,6 +70,7 @@ if($_GPC['__input']['method'] == 'r-info' || $_GPC['__input']['interId'] == 8000
         $pc = new wxbizdatacrypt($appid, $session_key);
         $pc->wxbizdatacrypt($appid, $session_key);
         $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
+        print_r($user_info);die;
         if ($user_info === false || $errCode !== 0) {
             setJson(1001,'解密失败','');
         } else {
@@ -77,9 +96,49 @@ if($_GPC['__input']['method'] == 'r-info' || $_GPC['__input']['interId'] == 8000
         }
 }
 
+
+/*
+* 从小程序登录与注册，获取用户openid和信息
+* $code = '003eJ5IZ1rE6lX0RioJZ1xPcIZ1eJ5IB'; jscode
+* $iv = 'xXlcTnILAjHeNdUFfNrRSg==';
+* $encrypt_data 加密用户信息,含有openid
+*/
 if($_GPC['__input']['interId'] == 80002){
-    setJson(0, 'success', []);
+    $secret = '046b7fef5e1a6ae799cf95d539f20c06';
+    $appid = 'wxa5a1cce830046e02';
+    load()->func('communication');
+    $post_data = $_GPC['__input']['params'];
+
+    $code = $post_data['code'];
+    $iv = $post_data ['iv'];
+    $encrypt_data = $post_data ['encryptedData'];
+    $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
+        //{"session_key":"Ks3xrtbke6McnCwPm6467w==","expires_in":7200,"openid":"odM_50LGZKsWqE7xh61UjvU-dHOE"}
+    $wxInfo = ihttp_get($url);
+    $return_message = json_decode($wxInfo['content'],true);
+    if(empty($return_message['session_key'])) {
+        setJson(1001,'用户不存在','');
+    }
+    $user = pdo_fetch("SELECT nick_name as nickname,headimgurl as avatarUrl,gender  FROM ".tablename('user_info')." WHERE open_id = :open_id", array(':open_id' => $return_message['openid']));
+    if(!$user){
+        $user_info['app_id'] = $appid;
+        $user_info['nick_name'] = $post_data['nickname'];
+        $user_info['open_id'] = $return_message['openid'];
+        $user_info['gender'] = intval($post_data['gender']);
+        $user_info['headimgurl'] = $post_data['avatarUrl'];
+        $user_info['reg_time'] = date("Y-m-d H:i:s",time());
+        pdo_insert('user_info', $user_info);
+        $uid = pdo_insertid();
+        $user = pdo_fetch("SELECT nick_name as nickname,headimgurl as avatarUrl,gender  FROM ".tablename('user_info')." WHERE id = :id", array(':id' => $uid));
+    }
+    
+    $data['userInfo'] = $user;
+    $data['message'] = 'success';
+    $data['status'] = 0;
+    exit( json_encode($data,true));
 }
+
+
 
 //活动列表
 if($_GPC['__input']['method'] == 'h-hp'){

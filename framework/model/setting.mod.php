@@ -28,11 +28,8 @@ function setting_save($data = '', $key = '') {
 
 function setting_load($key = '') {
 	global $_W;
-
 	$cachekey = cache_system_key('setting');
-
     $settings = cache_load($cachekey);
-
     if (empty($settings)) {
         $settings = pdo_fetchall('SELECT * FROM ' . tablename('core_settings'), array(), 'key');
 		if (is_array($settings)) {
