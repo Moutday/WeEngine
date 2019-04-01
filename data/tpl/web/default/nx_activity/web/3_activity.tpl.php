@@ -2,7 +2,6 @@
 <div class="we7-page-title">文章管理</div>
 <ul class="we7-page-tab">
 	<li <?php  if($do == 'list') { ?>class="active"<?php  } ?>><a href="<?php  echo url('site/entry/news');?>">活动列表</a></li>
-	<li <?php  if($do == 'category' || $do == 'category_post') { ?>class="active"<?php  } ?>><a href="<?php  echo url('article/news/category');?>">新闻分类</a></li>
 </ul>
 <?php  if($do == 'list') { ?>
 <div class="clearfix">
@@ -12,17 +11,17 @@
 		<input type="hidden" name="do" value="list">
 		<input type="hidden" name="cateid" value="<?php  echo $_GPC['cateid'];?>">
 		<input type="hidden" name="createtime" value="<?php  echo $_GPC['createtime'];?>">
-		<div class="form-group">
-			<label class="col-sm-2 control-label">新闻分类</label>
-			<div class="form-controls col-sm-8">
-				<div class="btn-group we7-btn-group">
-					<a href="<?php  echo filter_url('cateid:0');?>" class="btn <?php  if($_GPC['cateid'] == 0) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>">不限</a>
+		<!--<div class="form-group">-->
+			<!--<label class="col-sm-2 control-label">新闻分类</label>-->
+			<!--<div class="form-controls col-sm-8">-->
+				<!--<div class="btn-group we7-btn-group">-->
+					<!--<a href="<?php  echo filter_url('cateid:0');?>" class="btn <?php  if($_GPC['cateid'] == 0) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>">不限</a>-->
 					<?php  if(is_array($categorys)) { foreach($categorys as $category) { ?>
-					<a href="<?php  echo filter_url('cateid:' . $category['id']);?>" class="btn <?php  if($_GPC['cateid'] == $category['id']) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>"><?php  echo $category['title'];?></a>
+					<!--<a href="<?php  echo filter_url('cateid:' . $category['id']);?>" class="btn <?php  if($_GPC['cateid'] == $category['id']) { ?>btn-primary<?php  } else { ?>btn-default<?php  } ?>"><?php  echo $category['title'];?></a>-->
 					<?php  } } ?>
-				</div>
-			</div>
-		</div>
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
 		<div class="form-group">
 			<label class="col-sm-2 control-label">添加时间</label>
 			<div class="form-controls col-sm-8">

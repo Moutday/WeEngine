@@ -8,8 +8,6 @@ class Nx_activityModuleSite  extends WeModuleSite {
     }
 
     public  function doWebUser(){
-        print_r($_GPC);die;
-        $_GPC['act'] == 'del';
         require 'inc/web/user.ctrl.php';
     }
 
