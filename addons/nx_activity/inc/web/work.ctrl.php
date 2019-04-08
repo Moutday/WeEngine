@@ -9,10 +9,10 @@ $dos = array('category_post', 'category', 'category_del', 'list', 'post', 'batch
 $do = in_array($do, $dos) ? $do : 'list';
 
 if ($do == 'list') {
-	$_W['page']['title'] = '所有用户-用户列表';
+	$_W['page']['title'] = '所有工作-工作列表';
 
 	$pindex = max(1, intval($_GPC['page']));
-	$activity_table = table('userinfo');
+	$activity_table = table('work');
 	$createtime = intval($_GPC['createtime']);
 	$title = safe_gpc_string($_GPC['title']);
 
@@ -32,5 +32,5 @@ if ($do == 'list') {
 	$total = $activity_table->getLastQueryTotal();
 	$pager = pagination($total, $pindex, $psize);
 
-    include $this->template('web/user');
+    include $this->template('web/work');
 }

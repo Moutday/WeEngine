@@ -37,54 +37,45 @@
 		</div>
 	</form>
 	<table class="table we7-table table-hover">
-		<col width="80px"/>
-		<col width="90px"/>
-		<col width="150px"/>
+		<col width="110px"/>
+		<col width="200px"/>
+		<col width="130px"/>
 		<col width="100px"/>
-		<col width="90px"/>
-		<col width="80px"/>
-		<col width="140px"/>
-		<col width="120px"/>
+		<col width="300px"/>
+		<col width="300px"/>
 		<tr>
-			<th>活动名称</th>
 			<th>用户ID</th>
-			<th>薪资</th>
-			<th>微信群二维码URL</th>
-			<th>创建时间</th>
-			<th>最后更新时间</th>
-			<th class="text-right">操作</th>
+			<th>微信名称</th>
+			<th>头像</th>
+			<th>性别</th>
+			<th>注册时间</th>
+			<th style="text-align: right">操作</th>
 		</tr>
 		<?php  if(is_array($activitys)) { foreach($activitys as $list) { ?>
 		<tr>
 			<td>
-			<span><?php  echo $list['name'];?></span>
+				<span><?php  echo $list['id'];?></span>
 			</td>
 			<td>
-				<span><?php  echo $list['user_id'];?></span>
+				<span><?php  echo $list['nick_name'];?></span>
 			</td>
 			<td>
-				<span><?php  echo $list['reward'];?></span>
+				<span><img src="<?php  echo $list['headimgurl'];?>" style="height:50px;width: 50px"></span>
 			</td>
 			<td>
-				<span><?php  echo $list['group_code_url'];?></span>
-			</td>
-			<td>
-			<?php  if($list['state'] == 1) { ?>
-			<span class="label label-success">发布中</span>
-			<?php  } else if($list['state'] == 2) { ?>
-			<span class="label label-danger">满人</span>
-			<?php  } else if($list['state'] == 3) { ?>
-			<span class="label label-danger">已结束</span>
-			{elseif}
-			<span class="label label-danger">取消活动</span>
+			<?php  if($list['gender'] == 1) { ?>
+			<span class="label label-success">男</span>
+			<?php  } else { ?>
+			<span class="label label-danger">女</span>
 			<?php  } ?>
 			</td>
-			<td class=""><?php  echo $list['create_time'];?></td>
-			<td class=""><?php  echo $list['last_update_time'];?></td>
+			<td>
+				<span><?php  echo $list['reg_time'];?></span>
+			</td>
 			<td>
 				<div class="link-group">
-					<a href="<?php  echo url('article/news/post', array('id' => $new['id']));?>">编辑</a>
-					<a href="<?php  echo url('article/news/del', array('id' => $new['id']));?>" class="del" onclick="if(!confirm('确定删除吗')) return false;">删除</a>
+					<a href="<?php  echo url('article/news/post', array('id' => $list['id']));?>">查看</a>
+					<!--<a href="<?php  echo url('article/news/del', array('id' => $new['id']));?>" class="del" onclick="if(!confirm('确定删除吗')) return false;">删除</a>-->
 				</div>
 			</td>
 		</tr>
