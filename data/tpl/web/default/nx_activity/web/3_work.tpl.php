@@ -1,12 +1,11 @@
 <?php defined('IN_IA') or exit('Access Denied');?><?php (!empty($this) && $this instanceof WeModuleSite || 1) ? (include $this->template('common/header', TEMPLATE_INCLUDEPATH)) : (include template('common/header', TEMPLATE_INCLUDEPATH));?>
 <ol class="breadcrumb we7-breadcrumb">
-	<a href="<?php  echo url('article/news/list');?>"><i class="wi wi-back-circle"></i> </a>
-	<li>
-		<a href="<?php  echo url('article/news/list');?>">新闻列表</a>
+	<a href="<?php  echo url('work/news/list');?>"><i class="wi wi-back-circle"></i> </a>
+	<li class="active">
+		<a href="">工作列表</a>
 	</li>
-	<li>
-		添加新闻
-	</li>
+	<li><a href="<?php  echo filter_url('do:post');?>">添加工作</a></li>
+
 </ol>
 <?php  if($do == 'list') { ?>
 <div class="clearfix">
