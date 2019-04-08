@@ -28,10 +28,48 @@ if(!empty($_GPC['appid'])) {
 
 //获取个人信息
 if($_GPC['__input']['method'] == 'r-info'){
-    setJson(0, 'success', []);
+    $post_data = $_GPC['__input']['params'];
+    $resume = pdo_get('user_resume',array('user_id' => $post_data['uid']));
+    $data['dances'] = [];
+    $data['mocs'] = [];
+    $data['pros'] = [];
+    $data['userInfo'] = $resume;
+    setJson(0, 'success', $data);
 }
 
-//获取个人信息
+//参加活动
+if($_GPC['__input']['method'] == "m-apply-act"){
+    $post_data = $_GPC['__input'];
+
+    $resume = pdo_get('user_resume',array('user_id' => $post_data['uid']));
+    if(!$resume){
+        setJson(1001,'错误','');
+    }
+    $activity = pdo_get('activity',array('id' => $post_data['id']));
+    if(!$activity){
+        setJson(1001,'错误','');
+    }
+    $ua = pdo_get('user_activity_rel',array('user_id' => $post_data['uid'],'activity_id' => $post_data['id']));
+    if($ua){
+        setJson(1001,'已参加过活动','');
+    }
+    $data['activity_id'] = $post_data['id'];
+    $data['activity_name'] = $activity['name'];
+    $data['user_id'] = $post_data['uid'];
+    $data['resume_id'] = $resume['id'];
+    $data['real_name'] = $resume['real_name'];
+    $data['state'] = 1;
+    $data['create_time'] = date("Y-m-d H:i:s",time());
+    pdo_insert('user_activity_rel', $data);
+    $arId = pdo_insertid();
+    if(!$arId){
+        setJson(1001,'参加错误','');
+    }
+    setJson(00, 'success', $arId);
+}
+
+
+//修改个人信息 ？？
 if($_GPC['__input']['interId'] == 80003){
 
     $post_data = $_GPC['__input']['params'];
@@ -44,58 +82,6 @@ if($_GPC['__input']['interId'] == 80003){
     $uid['uid'] = pdo_insertid();
     setJson(0, 'success', $uid);
 }
-/*
-* 从小程序登录与注册，获取用户openid和信息
-* $code = '003eJ5IZ1rE6lX0RioJZ1xPcIZ1eJ5IB'; jscode
-* $iv = 'xXlcTnILAjHeNdUFfNrRSg==';
-* $encrypt_data 加密用户信息,含有openid
-*/
-if($_GPC['__input']['method'] == 'r-info'){
-    $secret = '046b7fef5e1a6ae799cf95d539f20c06';
-    $appid = 'wxa5a1cce830046e02';
-    load()->func('communication');
-    $post_data = $_GPC['__input']['params'];
-
-    $code = $post_data['code'];
-    $iv = $post_data ['iv'];
-    $encrypt_data = $post_data ['encryptedData'];
-    $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' .$appid  . '&secret=' .$secret . '&js_code=' . $code . '&grant_type=authorization_code';
-        //{"session_key":"Ks3xrtbke6McnCwPm6467w==","expires_in":7200,"openid":"odM_50LGZKsWqE7xh61UjvU-dHOE"}
-    $wxInfo = ihttp_get($url);
-    $return_message = json_decode($wxInfo['content'],true);
-    if(empty($return_message['session_key'])) {
-            setJson(1001,'用户不存在','');
-        }
-        $session_key = $return_message['session_key'];
-        $pc = new wxbizdatacrypt($appid, $session_key);
-        $pc->wxbizdatacrypt($appid, $session_key);
-        $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
-        print_r($user_info);die;
-        if ($user_info === false || $errCode !== 0) {
-            setJson(1001,'解密失败','');
-        } else {
-
-            $user_info = json_decode($user_info, true);
-            $pro_member_info =  ProMemberService::fetch_by_pro_openid($user_info['openId']);
-            if(!empty($pro_member_info)) {
-                //登录成功，返回wid,api_session_key
-                $api_session_key = ProMemberService::dologin($pro_member_info['id']);
-                $result['wid'] = $pro_member_info['id'];
-                $result['api_session_key'] = $api_session_key;
-            }else{
-                $result['api_session_key'] =  ProMemberService::pro_register($user_info);
-            }
-            $emoji = new \Common\Lib\emoji();
-            $user_info = ProMemberService::fetch_by_id($pro_member_info['id']);
-            $member['wid'] =  $user_info['id'];
-            $member['type'] =  $user_info['type'];
-            $member['pro_headimgurl'] =  $user_info['pro_headimgurl'];
-            $member['pro_nickname']   =  $user_info['username'];
-            $member['api_session_key'] =  $result['api_session_key'];
-            setJson(0, 'ok', $member);
-        }
-}
-
 
 /*
 * 从小程序登录与注册，获取用户openid和信息
@@ -119,7 +105,7 @@ if($_GPC['__input']['interId'] == 80002){
     if(empty($return_message['session_key'])) {
         setJson(1001,'用户不存在','');
     }
-    $user = pdo_fetch("SELECT nick_name as nickname,headimgurl as avatarUrl,gender  FROM ".tablename('user_info')." WHERE open_id = :open_id", array(':open_id' => $return_message['openid']));
+    $user = pdo_fetch("SELECT id,nick_name as nickname,headimgurl as avatarUrl,gender  FROM ".tablename('user_info')." WHERE open_id = :open_id", array(':open_id' => $return_message['openid']));
     if(!$user){
         $user_info['app_id'] = $appid;
         $user_info['nick_name'] = $post_data['nickname'];
@@ -129,7 +115,7 @@ if($_GPC['__input']['interId'] == 80002){
         $user_info['reg_time'] = date("Y-m-d H:i:s",time());
         pdo_insert('user_info', $user_info);
         $uid = pdo_insertid();
-        $user = pdo_fetch("SELECT nick_name as nickname,headimgurl as avatarUrl,gender  FROM ".tablename('user_info')." WHERE id = :id", array(':id' => $uid));
+        $user = pdo_fetch("SELECT id,nick_name as nickname,headimgurl as avatarUrl,gender  FROM ".tablename('user_info')." WHERE id = :id", array(':id' => $uid));
     }
     
     $data['userInfo'] = $user;
@@ -193,20 +179,23 @@ if($_GPC['__input']['method'] == 'a-get'){
 //发布活动
 if($_GPC['__input']['method'] == 'a-add'){
     $postData = $_GPC['__input']['params'];
+    if(!intval($postData['uid'])){
+         setJson(1001, '参数错误', []);
+    }
     $id = intval($postData['id']);
     $activitys = table('activity')->searchWithId($id)->get();
     $reward = intval($postData['act']['reward']) ? intval($postData['act']['reward']) :     setJson(1011, '请输入酬劳', []);
     $population = intval($postData['act']['population']) ? intval($postData['act']['population']) :     setJson(1011, '请输入人数', []);
     $minStature = intval($postData['act']['minStature']) ? intval($postData['act']['minStature']) :     setJson(1011, '请输入身高', []);
     $minWeight = intval($postData['act']['minWeight']) ? intval($postData['act']['minWeight']) :     setJson(1011, '请输入体重', []);
-    $gender = intval($postData['act']['gender']) ? intval($postData['act']['gender']) :     setJson(1011, '请选择性别', []);
+    $gender = intval($postData['act']['gender']) ? intval($postData['act']['gender']) : 0;
     $name = trim($postData['act']['name']) ? trim($postData['act']['name']) :  setJson(1011, '请输入活动名称', []);
     $remark = trim($postData['act']['remark']) ? trim($postData['act']['remark']) :  setJson(1011, '请输入活动内容', []);
     $rehearsal_detail_address = trim($postData['act']['raddr']) ? trim($postData['act']['raddr']) :  setJson(1011, '请输入活动排练地址', []);
     $show_detail_address = trim($postData['act']['saddr']) ? trim($postData['act']['saddr']) :  setJson(1011, '请输入活动演出地址', []);
     $data = array(
         'name' => $name,
-        'user_id' => 1111,
+        'user_id' => intval($postData['uid']),
         'rehearsal_detail_address' => $rehearsal_detail_address,
         'show_detail_address' => $show_detail_address,
         'min_stature' => $minStature,
@@ -238,20 +227,20 @@ if($_GPC['__input']['method'] == 'a-add'){
             $actDate['activity_id'] = $actId;
             pdo_insert('activity_date_rel', $actDate);
 
-            $actDate['date'] = end($postData['pl']) ?  end($postData['pl']) : '';
-            $actDate['type'] = 2;
-            $actDate['activity_id'] = $actId;
-            pdo_insert('activity_date_rel', $actDate);
+            // $actDate['date'] = end($postData['pl']) ?  end($postData['pl']) : '';
+            // $actDate['type'] = 2;
+            // $actDate['activity_id'] = $actId;
+            // pdo_insert('activity_date_rel', $actDate);
 
             $actDate['activity_id'] = $actId;
             $actDate['date'] = array_shift($postData['yc']) ?  array_shift($postData['yc']) : '';
             $actDate['type'] = 1;
             pdo_insert('activity_date_rel', $actDate);
 
-            $actDate['activity_id'] = $actId;
-            $actDate['date'] = end($postData['yc']) ?  end($postData['yc']) : '';
-            $actDate['type'] = 1;
-            pdo_insert('activity_date_rel', $actDate);
+            // $actDate['activity_id'] = $actId;
+            // $actDate['date'] = end($postData['yc']) ?  end($postData['yc']) : '';
+            // $actDate['type'] = 1;
+            // pdo_insert('activity_date_rel', $actDate);
 
             foreach ($postData['danceIds'] as $k=>$v){
                 $actWork['activity_id'] = $actId;
@@ -269,11 +258,9 @@ if($_GPC['__input']['method'] == 'a-add'){
 
 
 //修改个人信息
-if($_GPC['__input']['method'] == 'r-add'){
+if($_GPC['__input']['method'] == 'r-modify'){
     $postData = $_GPC['__input']['params'];
-    $postData['uid'] = 1;
     $uid = intval($postData['uid']) ? intval($postData['uid']):     setJson(1011, '用户id错误', []);
-
     $data = array(
         'birthday' => $postData['birthday'],
         'bust' => $postData['bust'],
@@ -288,14 +275,22 @@ if($_GPC['__input']['method'] == 'r-add'){
         'real_name' => $postData['username'],
         'waist' => $postData['waist'],
         'weight' => $postData['weight'],
+        'create_time' => date('Y-m-d H:i:s',time())
     );
     try{
         pdo_begin();
-        pdo_update('user_resume', $data, array('user_id' => $uid));
         $resume = pdo_get('user_resume',array('user_id' => $uid));
-        pdo_delete('resume_work_rel',array('resume_id' => $resume['id']));
+        if(!$resume){
+            $data['user_id'] = $uid;
+            pdo_insert('user_resume', $data);
+            $resume_id = pdo_insertid();
+        }else{
+            pdo_update('user_resume', $data, array('user_id' => $uid));
+        }
+        $rid = $resume ? $resume['id'] : $resume_id;
+        pdo_delete('resume_work_rel',array('resume_id' => $rid));
         foreach ($postData['danceIds'] as $k=>$v){
-            $work['resume_id'] = $resume['id'];
+            $work['resume_id'] = $rid;
             $work['dance_id'] = $v;
             pdo_insert('resume_work_rel', $work);
         }
@@ -343,7 +338,7 @@ if ($do == 'login') {
  */
 function setJson($status=0, $message='', $data='') {
     $json = array(
-         'status' => $status, 'message' => $message,'data'=>$data
+         'status' => $status, 'resultMsg' => $message,'data'=>$data
     );
     exit( json_encode($json,true));
 }
