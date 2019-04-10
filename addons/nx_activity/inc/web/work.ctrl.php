@@ -36,6 +36,7 @@ if ($do == 'list') {
 }
 
 if ($do == 'post') {
+    print_r($_GPC);die;
     $_W['page']['title'] = '新增工作-工作列表';
     $id = intval($_GPC['id']);
     $new = table('articlenews')->searchWithId($id)->get();
